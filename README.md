@@ -55,9 +55,6 @@ server: {
 
 <details> <summary> How your vite.config.ts and capacitor.config.ts might look now: </summary>
 
-Now to make running the server as well as starting the android emulator easier I made it all into one command which you can run with `npm run android-dev`:  
-`"android-dev": "start /B npm run dev -- --host && npm run build && npx cap sync && npx cap open android"`
-
 ```
 //vite.config.ts
 import { sveltekit } from '@sveltejs/kit/vite';
@@ -88,6 +85,9 @@ export default config;
 ```
 
 </details>
+
+Now to make running the server as well as starting the android emulator easier I made it all into one command which you can run with `npm run android-dev`:  
+`"android-dev": "start /B npm run dev -- --host && npm run build && npx cap sync && npx cap open android"`
 
 ## Audit fixes
 
