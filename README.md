@@ -34,12 +34,9 @@ To now open the app on the emulator we just need to:
 
 What about "hot module reloading" / "live reloading"?
 
-
-
-
 For that adjust the `vite.config.ts` and `capacitor.config.json`.
 
-vite.config.ts add this:
+To vite.config.ts add this:
 ```
 server: {
     host: '0.0.0.0',
@@ -47,7 +44,7 @@ server: {
 }
 ```
 
-capacitor.config.json add this:
+To capacitor.config.json add this:
 ```
 server: {
     url: 'http://10.0.2.2:5173',
@@ -57,6 +54,9 @@ server: {
 
 <details> <summary> How your vite.config.ts and capacitor.config.ts might look now: </summary>
 
+Now to make running the server as well as starting the android emulator easier I made it all into one command which you can run with `npm run android-dev`:  
+`"android-dev": "start /B npm run dev -- --host && npm run build && npx cap sync && npx cap open android"`
+
 ```
 //vite.config.ts
 import { sveltekit } from '@sveltejs/kit/vite';
@@ -65,8 +65,8 @@ import { defineConfig } from 'vite';
 export default defineConfig({
 	plugins: [sveltekit()],
 	server: {
-		host: '0.0.0.0', // Allow external connections
-		port: 5173, // Default Vite port
+		host: '0.0.0.0',
+		port: 5173,
 	  }
 });
 
@@ -100,4 +100,4 @@ Deleting `node_modules` and `package-lock.json` and using pnpm instead solved th
 
 ## Additional Notes
 
-Tauri has recently added the option to not only turn your website into a Windows and Mac app, but also Android and iOS. But that is still a bit experimental.
+Tauri has recently added the option to not only turn your website into a Windows and Mac app, but also Android and iOS. But that it's still very new and has a much smaller plugin ecosystem.
