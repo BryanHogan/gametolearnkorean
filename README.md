@@ -20,11 +20,12 @@ Make learning with flashcards more fun with gamification.
    - `npm i -D @sveltejs/adapter-static`. Add lines to `svelte.config.js` to change adapter to static, adjust first line and add options to adapter. (See guide on ionic.io)
    - Create layout which sets prerender true. (See guide on ionic.io)
    - Probably also want to download Android studio to develop Android app. Install Android Studio and setup emulator.
+   - More on using CapacitorJS here: https://capacitorjs.com/docs/getting-started
 3. Add Tauri
     - Tauri requires you to download
 4. Add PostCSS
 
-### Using Capacitor
+## Using Capacitor
 
 The steps above is everything you need to setup the project.  
 To now open the app on the emulator we just need to:
