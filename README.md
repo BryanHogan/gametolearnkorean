@@ -86,7 +86,7 @@ export default config;
 
 </details>
 
-Now to make running the server as well as starting the android emulator easier I made it all into one command which you can run with `npm run android-dev`:  
+Now to make running the server as well as starting the android emulator easier I made it all into one command which you can run with `npm run android-dev`. Add this to the `package.json` and then under `scripts`:  
 `"android-dev": "start /B npm run dev -- --host && npm run build && npx cap sync && npx cap open android"`
 
 ## Audit fixes
