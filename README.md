@@ -32,6 +32,62 @@ To now open the app on the emulator we just need to:
 - `npx cap sync`
 - `npx cap open android`
 
+What about "hot module reloading" / "live reloading"?
+
+
+
+
+For that adjust the `vite.config.ts` and `capacitor.config.json`.
+
+vite.config.ts add this:
+```
+server: {
+		host: '0.0.0.0',
+		port: 5173,
+	  }
+```
+
+capacitor.config.json add this:
+```
+server: {
+    url: 'http://10.0.2.2:5173',
+    cleartext: true
+  }
+```
+
+<details> <summary> How your vite.config.ts and capacitor.config.ts might look now: </summary>
+
+```
+//vite.config.ts
+import { sveltekit } from '@sveltejs/kit/vite';
+import { defineConfig } from 'vite';
+
+export default defineConfig({
+	plugins: [sveltekit()],
+	server: {
+		host: '0.0.0.0', // Allow external connections
+		port: 5173, // Default Vite port
+	  }
+});
+
+//capacitor.config.json
+import type { CapacitorConfig } from '@capacitor/cli';
+
+const config: CapacitorConfig = {
+  appId: 'game.tolearnkorean.com',
+  appName: 'gametolearnkorean',
+  webDir: 'build',
+  server: {
+    url: 'http://10.0.2.2:5173',
+    cleartext: true
+  }
+};
+
+export default config;
+```
+
+</details>
+
 ## Audit fixes
 
 When I first setup SvelteKit and added Capacitor I had a few low severity vulnerabilities from the "npm audit report", using "npm audit fix --force" didn't work since it resulted in an error.
