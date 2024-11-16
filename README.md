@@ -42,9 +42,9 @@ For that adjust the `vite.config.ts` and `capacitor.config.json`.
 vite.config.ts add this:
 ```
 server: {
-		host: '0.0.0.0',
-		port: 5173,
-	  }
+    host: '0.0.0.0',
+    port: 5173,
+}
 ```
 
 capacitor.config.json add this:
@@ -52,7 +52,7 @@ capacitor.config.json add this:
 server: {
     url: 'http://10.0.2.2:5173',
     cleartext: true
-  }
+}
 ```
 
 <details> <summary> How your vite.config.ts and capacitor.config.ts might look now: </summary>
