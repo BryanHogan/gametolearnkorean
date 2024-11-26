@@ -2,46 +2,53 @@
 	import { writable } from 'svelte/store';
 	import words from '$lib/data/words.json';
 
-	// Select 5 random word pairs from the dataset
-	const selectedWords = words.sort(() => Math.random() - 0.5).slice(0, 5);
-
-	// Create separate card sets for English and Korean
-	let englishCards = selectedWords
-		.map((word, index) => ({
-			id: `en-${index}`,
-			text: word.english,
-			type: 'english',
-			pairId: index
-		}))
-		.sort(() => Math.random() - 0.5); // Shuffle English cards
-
-	let koreanCards = selectedWords
-		.map((word, index) => ({
-			id: `ko-${index}`,
-			text: word.korean,
-			type: 'korean',
-			pairId: index
-		}))
-		.sort(() => Math.random() - 0.5); // Shuffle Korean cards
-
 	// Game state
 	const selectedCards = writable([]);
 	const matches = writable(new Set());
 	const score = writable(0);
+	const totalPairs = writable(5); // Start with 5 pairs
+
+	// Function to initialize the game
+	const initializeGame = () => {
+		// Select a number of word pairs based on the current totalPairs value
+		const selectedWords = words.sort(() => Math.random() - 0.5).slice(0, $totalPairs);
+
+		// Create separate card sets for English and Korean
+		englishCards = selectedWords
+			.map((word, index) => ({
+				id: `en-${index}`,
+				text: word.english,
+				type: 'english',
+				pairId: index
+			}))
+			.sort(() => Math.random() - 0.5); // Shuffle English cards
+
+		koreanCards = selectedWords
+			.map((word, index) => ({
+				id: `ko-${index}`,
+				text: word.korean,
+				type: 'korean',
+				pairId: index
+			}))
+			.sort(() => Math.random() - 0.5); // Shuffle Korean cards
+
+		matches.set(new Set());
+		selectedCards.set([]);
+	};
+
+	// Initialize the game
+	let englishCards = [];
+	let koreanCards = [];
+	initializeGame();
 
 	// Handle card selection
 	const selectCard = (card) => {
-		// Ignore clicks on matched cards
 		matches.subscribe((matched) => {
 			if (matched.has(card.id)) return;
 		});
 
-		// Update selection logic
 		selectedCards.update((current) => {
-			// Ignore clicks on already selected cards
 			if (current.some((c) => c.id === card.id)) return current;
-
-			// Allow selecting up to 2 cards
 			return [...current, card].slice(0, 2);
 		});
 	};
@@ -51,7 +58,6 @@
 		const [first, second] = $selectedCards;
 
 		if (first.pairId === second.pairId && first.type !== second.type) {
-			// Valid match
 			matches.update((set) => {
 				set.add(first.id).add(second.id);
 				return set;
@@ -59,14 +65,21 @@
 			score.update((s) => s + 1);
 		}
 
-		// Clear selection immediately after processing
+		// Clear selection
 		selectedCards.set([]);
+	}
+
+	// Check if all pairs are matched and increase difficulty
+	$: if ($matches.size / 2 === $totalPairs) {
+		totalPairs.update((pairs) => pairs + 1); // Increase the number of pairs
+		initializeGame(); // Start a new round
 	}
 </script>
 
 <div>
 	<h1>Score: {$score}</h1>
-	
+	<h2>Pairs: {$totalPairs}</h2>
+
 	<!-- English words row -->
 	<div class="english-row">
 		{#each englishCards as card}
@@ -93,7 +106,7 @@
 </div>
 
 <style>
-	h1 {
+	h1, h2 {
 		text-align: center;
 	}
 
