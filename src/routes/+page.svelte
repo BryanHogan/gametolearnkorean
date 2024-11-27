@@ -8,10 +8,29 @@
 	const score = writable(0);
 	const totalPairs = writable(5); // Start with 5 pairs
 
+	// Check if running in the browser
+	let wordData = [];
+
+	if (typeof window !== 'undefined') {
+		// Load word frequencies from localStorage or use initial words
+		wordData = JSON.parse(localStorage.getItem('wordData')) || words;
+	} else {
+		// Fallback for SSR (use the words as default)
+		wordData = words;
+	}
+
+	// Function to save word frequencies to localStorage
+	const saveWordData = () => {
+		if (typeof window !== 'undefined') {
+			localStorage.setItem('wordData', JSON.stringify(wordData));
+		}
+	};
+
 	// Function to initialize the game
 	const initializeGame = () => {
-		// Select a number of word pairs based on the current totalPairs value
-		const selectedWords = words.sort(() => Math.random() - 0.5).slice(0, $totalPairs);
+		// Sort words based on frequency (lower frequency first) and shuffle slightly
+		const sortedWords = [...wordData].sort((a, b) => a.frequency - b.frequency).slice(0, $totalPairs);
+		const selectedWords = sortedWords.sort(() => Math.random() - 0.5);
 
 		// Create separate card sets for English and Korean
 		englishCards = selectedWords
@@ -63,6 +82,10 @@
 				return set;
 			});
 			score.update((s) => s + 1);
+
+			// Update frequency of matched words
+			wordData[first.pairId].frequency += 1;
+			saveWordData();
 		}
 
 		// Clear selection
@@ -75,6 +98,7 @@
 		initializeGame(); // Start a new round
 	}
 </script>
+
 
 <div>
 	<h1>Score: {$score}</h1>
