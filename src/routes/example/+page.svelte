@@ -50,7 +50,7 @@
 				id: `en-${index}`,
 				text: word.english,
 				type: "english",
-				pairId: index,
+				pairId: index, 
 			}))
 			.sort(() => Math.random() - 0.5); // Shuffle English cards
 
