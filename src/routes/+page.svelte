@@ -54,10 +54,12 @@
             JSON.stringify(englishCards, null, 2),
         );
         console.log("Korean Cards Array:" + koreanCards);
+        pairAmount += 1;
     };
 
     const cardPicked = (card) => {
         console.log("Card picked: " + JSON.stringify(card, null, 2));
+        card.selected = true;
         selectedCards.push(card);
         console.log(
             "selectedCards Content: " + JSON.stringify(selectedCards, null, 2),
@@ -68,7 +70,6 @@
                 selectedCards[0].english == selectedCards[1].english &&
                 selectedCards[0].type != selectedCards[1].type
             ) {
-                // remove cards from englishCards and koreanCards
                 englishCards = englishCards.filter(
                     (c) => c.english !== selectedCards[0].english,
                 );
@@ -81,7 +82,8 @@
                 if (englishCards.length == 0 && koreanCards.length == 0) {
                     initializeRound();
                 }
-            }
+            } else if ( true ) {} //check if its the same card, if not apply wrong pick
+            selectedCards.forEach((card) => (card.selected = false));
             selectedCards = [];
         }
     };
@@ -89,23 +91,23 @@
     initializeRound();
 </script>
 
-<div>
+<div class="base-layout">
     <h1>Hi there</h1>
     <p>Score: {score}</p>
     <div class="card-grid-container">
-        <ul class="card-grid">
+        <ul class="card-grid" role="list">
             {#each englishCards as card}
                 <li>
-                    <Button type="grow" onclick={() => cardPicked(card)}
+                    <Button type={"grow card-neutral " + (card.selected ? "selected" : "")} onclick={() => cardPicked(card)}
                         ><p>{card.english}</p></Button
                     >
                 </li>
             {/each}
         </ul>
-        <ul class="card-grid">
+        <ul class="card-grid" role="list">
             {#each koreanCards as card}
                 <li>
-                    <Button type="grow" onclick={() => cardPicked(card)}
+                    <Button type={"grow card-neutral " + (card.selected ? "selected" : "")} onclick={() => cardPicked(card)}
                         ><p>{card.korean}</p></Button
                     >
                 </li>
@@ -121,6 +123,7 @@
         justify-content: space-between;
         padding: 2rem;
         max-width: 400px;
+        gap: var(--space-xl);
     }
     .card-grid {
         display: grid;

@@ -35,10 +35,6 @@
             height: 1.25rem;
             margin-block: 0.25rem;
         }
-        &:hover, &:focus-within {
-            color: var(--color-neutral-100);
-            background-color: var(--color-neutral-500);
-        }
     }
 
     .grow {
@@ -78,5 +74,12 @@
         &:hover, &:focus-within {
             background-color: var(--color-neutral-800);
         }
+    }
+
+    .card-neutral {
+        background-color: var(--color-neutral-700);
+    }
+    .selected {
+        background-color: var(--color-accent-700);
     }
 </style>
