@@ -21,8 +21,8 @@
 
     // Testing
     let koreanWord = $state("안녕하게요");
-    let block = $state("학");
-    let blockSimilar = $state("");
+    let block = $state(["학","로","드","새","샗","항"]);
+    let blockSimilar = $state([]);
     let test = $state("");
     test = testString();
 
@@ -43,7 +43,7 @@
     }
 
     let initializeRound = () => {
-        blockSimilar = getSimilarBlock(block);
+        blockSimilar = block.map(char => getSimilarBlock(char))
         selectLevelType();
         if ((levelType = "pairs")) {
             chosenPairs = shuffledWords(words).slice(0, pairAmount);
@@ -117,6 +117,7 @@
     <p>Score: {score} Level: {level}</p>
     <p>Testing: {test}</p>
     <p>Block: {block} SimilarBlock: {blockSimilar}</p>
+
     <p>{koreanWord.charAt(0)}</p>
     <div class="card-grid-container">
         {#if levelType == "pairs"}

@@ -16,7 +16,7 @@ const commonKoreanBlocks = [
 export function getSimilarBlock(block) {
     let splitted = [...disassemble(block)]; 
 
-    if (splitted.length < 1 || splitted.length > 3) return block;
+    if (splitted.length < 1 || splitted.length > 4) return block;
 
     let index = Math.floor(Math.random() * splitted.length);
     let char = splitted[index];
@@ -31,7 +31,7 @@ export function getSimilarBlock(block) {
 
     let newBlock = assemble(splitted);
 
-    if (newBlock === "" || disassemble(newBlock).length !== 3) {
+    if (newBlock === "" || newBlock.length === 0 || newBlock.length > 1) {
         return getSimilarBlock(block);
     }
 
