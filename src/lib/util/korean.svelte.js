@@ -4,17 +4,17 @@ const consonants = "ㄱㄲㄴㄷㄸㄹㅁㅂㅃㅅㅆㅇㅈㅉㅊㅋㅌㅍㅎ".s
 const vowels = "ㅏㅐㅑㅒㅓㅔㅕㅖㅗㅘㅙㅚㅛㅜㅝㅞㅟㅠㅡㅢㅣ".split("");
 
 const commonKoreanBlocks = [
-    "가", "나", "다", "라", "마", 
+    "가", "나", "다", "라", "마",
     "바", "사", "아", "자", "차",
-    "카", "타", "파", "하", "거", 
-    "너", "더", "러", "머", "버", 
-    "서", "어", "저", "처", "커", 
-    "터", "퍼", "허", "고", "노", 
+    "카", "타", "파", "하", "거",
+    "너", "더", "러", "머", "버",
+    "서", "어", "저", "처", "커",
+    "터", "퍼", "허", "고", "노",
     "도", "로", "모", "보"
 ];
 
 export function getSimilarBlock(block) {
-    let splitted = [...disassemble(block)]; 
+    let splitted = [...disassemble(block)];
 
     if (splitted.length < 1 || splitted.length > 4) return block;
 
@@ -29,16 +29,19 @@ export function getSimilarBlock(block) {
         return block;
     }
 
-    let newBlock = assemble(splitted);
-
-    if (newBlock === "" || newBlock.length === 0 || newBlock.length > 1) {
-        return getSimilarBlock(block);
+    try {
+        let newBlock = assemble(splitted);
+        if (!newBlock || newBlock.length !== 1 || newBlock === block) {
+            return getSimilarBlock(block);
+        }
+        return newBlock;
+    } catch (error) {
+        console.log("Failed to retry function getSimilarBlock.")
+        return block;
     }
-
-    return newBlock;
 }
 
-function getRandomKoreanBlock() {
+export function getRandomKoreanBlock() {
     const randomIndex = Math.floor(Math.random() * commonKoreanBlocks.length);
     return commonKoreanBlocks[randomIndex];
 }

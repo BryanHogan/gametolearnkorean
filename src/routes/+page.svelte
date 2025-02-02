@@ -1,7 +1,11 @@
 <script>
     import Button from "$lib/components/Button.svelte";
     import words from "$lib/data/words.json";
-    import { testString, getSimilarBlock } from "$lib/util/korean.svelte"
+    import {
+        testString,
+        getSimilarBlock,
+        getRandomKoreanBlock,
+    } from "$lib/util/korean.svelte";
 
     // set words array (if one exist in local storage use that, if not create new)
     // -> then use that as base for initializeRound
@@ -21,10 +25,30 @@
 
     // Testing
     let koreanWord = $state("안녕하게요");
-    let block = $state(["학","로","드","새","샗","항"]);
+    let block = $state(["학", "로", "드", "새", "샗", "항"]);
     let blockSimilar = $state([]);
     let test = $state("");
     test = testString();
+
+    let englishBlockWord = $state("");
+    let koreanBlocks = $state([""]);
+    let koreanBlockInputs = $state([]);
+
+    function getSimilarBlockInputs() {
+        let inputs = koreanBlocks.flatMap((block) => [
+            block,
+            ...getSimilarBlock(block),
+        ]);
+        while (inputs.length < 2) {
+            let extra = koreanBlocks.flatMap(getSimilarBlock).flat();
+            inputs.push(...extra);
+            inputs = [...new Set(inputs)];
+        }
+        inputs.push(getRandomKoreanBlock(), getRandomKoreanBlock());
+
+        inputs = [...new Set(inputs)];
+        return inputs;
+    }
 
     const shuffledWords = (array) => {
         for (let i = array.length - 1; i > 0; i--) {
@@ -43,9 +67,9 @@
     }
 
     let initializeRound = () => {
-        blockSimilar = block.map(char => getSimilarBlock(char))
+        blockSimilar = block.map((char) => getSimilarBlock(char));
         selectLevelType();
-        if ((levelType = "pairs")) {
+        if ((levelType === "pairs")) {
             chosenPairs = shuffledWords(words).slice(0, pairAmount);
 
             const averageExperience =
@@ -68,23 +92,18 @@
                 ...card,
             }));
             koreanCards = shuffledWords(koreanCards);
-
-            console.log(
-                "English Cards Array:",
-                JSON.stringify(englishCards, null, 2),
-            );
-            console.log("Korean Cards Array:" + koreanCards);
+        }
+        if ((levelType === "blockwriting")) {
+            chosenPairs = shuffledWords(words).slice(0, 1); // add condition for certain experience level needed later
+            englishBlockWord = chosenPairs[0].english;
+            koreanBlocks = chosenPairs[0].korean.split("");
+            getSimilarBlockInputs();
         }
     };
 
     const cardPicked = (card) => {
-        console.log("Card picked: " + JSON.stringify(card, null, 2));
         card.selected = true;
         selectedCards.push(card);
-        console.log(
-            "selectedCards Content: " + JSON.stringify(selectedCards, null, 2),
-        );
-        console.log(selectedCards.length);
         if (selectedCards.length >= 2) {
             if (
                 selectedCards[0].english == selectedCards[1].english &&
@@ -103,7 +122,7 @@
                     levelCompleted();
                 }
             } else if (true) {
-            } //check if its the same card, if not apply wrong pick
+            }
             selectedCards.forEach((card) => (card.selected = false));
             selectedCards = [];
         }
@@ -117,6 +136,8 @@
     <p>Score: {score} Level: {level}</p>
     <p>Testing: {test}</p>
     <p>Block: {block} SimilarBlock: {blockSimilar}</p>
+    <p>englishBlockWord: {englishBlockWord} koreanBlocks: {koreanBlocks}</p>
+    <p>koreanBlockInputs: {koreanBlockInputs}</p>
 
     <p>{koreanWord.charAt(0)}</p>
     <div class="card-grid-container">
