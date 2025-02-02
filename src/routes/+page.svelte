@@ -5,17 +5,20 @@
     // set words array (if one exist in local storage use that, if not create new)
     // -> then use that as base for initializeRound
 
-    let pairAmount = $state(5);
-    let chosenPairs = $state([]); // The pairs chosen at the beginning of the round.
+    let level = $state(1);
+    let pairAmount = $derived(Math.min(level + 4, 12));
+    let chosenPairs = $state([]);
 
     let englishCards = $state([]);
     let koreanCards = $state([]);
 
-    let selectedCards = $state([]); // Contains up to 2 cards, cards that have been clicked.
+    let selectedCards = $state([]);
 
-    // Game Stat Information
-    let level = $state(1);
+    let levelType = $state("pairs"); // "pairs", "onetomany", "blockwriting"
+
     let score = $state(0);
+
+    let koreanWord = $state("안녕하게요");
 
     const shuffledWords = (array) => {
         for (let i = array.length - 1; i > 0; i--) {
@@ -24,37 +27,47 @@
         }
         return array;
     };
+    function selectLevelType() {
+        levelType = "pairs";
+    }
+
+    function levelCompleted() {
+        level += 1;
+        initializeRound();
+    }
 
     let initializeRound = () => {
-        chosenPairs = shuffledWords(words).slice(0, pairAmount);
+        selectLevelType();
+        if ((levelType = "pairs")) {
+            chosenPairs = shuffledWords(words).slice(0, pairAmount);
 
-        const averageExperience =
-            chosenPairs.reduce((sum, pair) => sum + pair.experience, 0) /
-            chosenPairs.length;
+            const averageExperience =
+                chosenPairs.reduce((sum, pair) => sum + pair.experience, 0) /
+                chosenPairs.length;
 
-        if (averageExperience > 3 && chosenPairs.length > 3) {
-            chosenPairs.sort((a, b) => b.experience - a.experience);
-            chosenPairs.splice(0, 3);
-            const newPairs = shuffledWords(words).slice(0, 3);
-            chosenPairs = chosenPairs.concat(newPairs);
+            if (averageExperience > 3 && chosenPairs.length > 3) {
+                chosenPairs.sort((a, b) => b.experience - a.experience);
+                chosenPairs.splice(0, 3);
+                const newPairs = shuffledWords(words).slice(0, 3);
+                chosenPairs = chosenPairs.concat(newPairs);
+            }
+            englishCards = chosenPairs.map((card) => ({
+                type: "english",
+                ...card,
+            }));
+            englishCards = shuffledWords(englishCards);
+            koreanCards = chosenPairs.map((card) => ({
+                type: "korean",
+                ...card,
+            }));
+            koreanCards = shuffledWords(koreanCards);
+
+            console.log(
+                "English Cards Array:",
+                JSON.stringify(englishCards, null, 2),
+            );
+            console.log("Korean Cards Array:" + koreanCards);
         }
-        englishCards = chosenPairs.map((card) => ({
-            type: "english",
-            ...card,
-        }));
-        englishCards = shuffledWords(englishCards);
-        koreanCards = chosenPairs.map((card) => ({
-            type: "korean",
-            ...card,
-        }));
-        koreanCards = shuffledWords(koreanCards);
-
-        console.log(
-            "English Cards Array:",
-            JSON.stringify(englishCards, null, 2),
-        );
-        console.log("Korean Cards Array:" + koreanCards);
-        pairAmount += 1;
     };
 
     const cardPicked = (card) => {
@@ -80,9 +93,10 @@
                 console.log("Correct!");
                 score += 1;
                 if (englishCards.length == 0 && koreanCards.length == 0) {
-                    initializeRound();
+                    levelCompleted();
                 }
-            } else if ( true ) {} //check if its the same card, if not apply wrong pick
+            } else if (true) {
+            } //check if its the same card, if not apply wrong pick
             selectedCards.forEach((card) => (card.selected = false));
             selectedCards = [];
         }
@@ -93,26 +107,35 @@
 
 <div class="base-layout">
     <h1>Hi there</h1>
-    <p>Score: {score}</p>
+    <p>Score: {score} Level: {level}</p>
+    <p>{koreanWord.charAt(0)}</p>
     <div class="card-grid-container">
-        <ul class="card-grid" role="list">
-            {#each englishCards as card}
-                <li>
-                    <Button type={"grow card-neutral " + (card.selected ? "selected" : "")} onclick={() => cardPicked(card)}
-                        ><p>{card.english}</p></Button
-                    >
-                </li>
-            {/each}
-        </ul>
-        <ul class="card-grid" role="list">
-            {#each koreanCards as card}
-                <li>
-                    <Button type={"grow card-neutral " + (card.selected ? "selected" : "")} onclick={() => cardPicked(card)}
-                        ><p>{card.korean}</p></Button
-                    >
-                </li>
-            {/each}
-        </ul>
+        {#if levelType == "pairs"}
+            <ul class="card-grid" role="list">
+                {#each englishCards as card}
+                    <li>
+                        <Button
+                            type={"grow card-neutral " +
+                                (card.selected ? "selected" : "")}
+                            onclick={() => cardPicked(card)}
+                            ><p>{card.english}</p></Button
+                        >
+                    </li>
+                {/each}
+            </ul>
+            <ul class="card-grid" role="list">
+                {#each koreanCards as card}
+                    <li>
+                        <Button
+                            type={"grow card-neutral " +
+                                (card.selected ? "selected" : "")}
+                            onclick={() => cardPicked(card)}
+                            ><p>{card.korean}</p></Button
+                        >
+                    </li>
+                {/each}
+            </ul>
+        {/if}
     </div>
 </div>
 
