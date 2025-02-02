@@ -4,6 +4,9 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+overrides:
+  cookie@<0.7.0: '>=0.7.0'
+
 importers:
 
   .:
@@ -14,6 +17,9 @@ importers:
       '@capacitor/core':
         specifier: ^6.1.2
         version: 6.1.2
+      es-hangul:
+        specifier: ^2.3.0
+        version: 2.3.0
     devDependencies:
       '@capacitor/cli':
         specifier: ^6.1.2
@@ -485,9 +491,9 @@ packages:
     resolution: {integrity: sha512-KRs7WVDKg86PWiuAqhDrAQnTXZKraVcCc6vFdL14qrZ/DcWwuRo7VoiYXalXO7S5GKpqYiVEwCbgFDfxNHKJBQ==}
     engines: {node: ^12.20.0 || >=14}
 
-  cookie@0.6.0:
-    resolution: {integrity: sha512-U71cyTamuh1CRNCfpGY6to28lxvNwPG4Guz/EVjgf3Jmzv0vlDp1atT9eS5dDjMYHucpHbWns6Lwf3BKz6svdw==}
-    engines: {node: '>= 0.6'}
+  cookie@1.0.2:
+    resolution: {integrity: sha512-9Kr/j4O16ISv8zBBhJoi4bXOYNTkFLOqSL3UDB0njXxCXNezjeyVrJyGOWtgfs/q2km1gwBcfH8q1yEGoMYunA==}
+    engines: {node: '>=18'}
 
   cross-spawn@7.0.5:
     resolution: {integrity: sha512-ZVJrKKYunU38/76t0RMOulHOnUcbU9GbpWKAOZ0mhjr7CX6FVrH+4FrAapSOekrgFQ3f/8gwMEuIft0aKq6Hug==}
@@ -523,6 +529,9 @@ packages:
   env-paths@2.2.1:
     resolution: {integrity: sha512-+h1lkLKhZMTYjog1VEpJNG7NZJWcuc2DDk/qsqSTRRCOXiLjeQ1d1/udrUGhqMxUgAlwKNZ0cf2uqan5GLuS2A==}
     engines: {node: '>=6'}
+
+  es-hangul@2.3.0:
+    resolution: {integrity: sha512-4Z5JYt5tDTQpxlLhJ1GtyMOOkjgN5h6zKcHoQyKf/p1DIH0wWyBZFoRTy5ImQ+DUOwntKxNJCz2NWe6YfIU1aQ==}
 
   esbuild@0.21.5:
     resolution: {integrity: sha512-mg3OPMV4hXywwpoDxu3Qda5xCKQi+vCTZq8S9J/EpkhB2HzKXq4SNFZE3+NK93JYxc8VMSep+lOUSC/RVKaBqw==}
@@ -1215,7 +1224,7 @@ snapshots:
     dependencies:
       '@sveltejs/vite-plugin-svelte': 4.0.1(svelte@5.2.2)(vite@5.4.11(@types/node@22.9.0))
       '@types/cookie': 0.6.0
-      cookie: 0.6.0
+      cookie: 1.0.2
       devalue: 5.1.1
       esm-env: 1.1.4
       import-meta-resolve: 4.1.0
@@ -1317,7 +1326,7 @@ snapshots:
 
   commander@9.5.0: {}
 
-  cookie@0.6.0: {}
+  cookie@1.0.2: {}
 
   cross-spawn@7.0.5:
     dependencies:
@@ -1342,6 +1351,8 @@ snapshots:
   emoji-regex@8.0.0: {}
 
   env-paths@2.2.1: {}
+
+  es-hangul@2.3.0: {}
 
   esbuild@0.21.5:
     optionalDependencies:

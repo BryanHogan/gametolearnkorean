@@ -9,6 +9,9 @@ Make learning with flashcards more fun with gamification.
 - CapacitorJS: Turn my website into an Android and iOS app.
 - Tauri: Turn my website into a Windows and Mac app.
 
+Additional libraries:
+- es-hangul: https://es-hangul.slash.page/en/docs/introduction
+
 ## Setup
 
 1. Setup SvelteKit project with `npx sv create my-app` - https://svelte.dev/docs/kit/creating-a-project

@@ -1,6 +1,7 @@
 <script>
     import Button from "$lib/components/Button.svelte";
     import words from "$lib/data/words.json";
+    import { testString, getSimilarBlock } from "$lib/util/korean.svelte"
 
     // set words array (if one exist in local storage use that, if not create new)
     // -> then use that as base for initializeRound
@@ -18,7 +19,12 @@
 
     let score = $state(0);
 
+    // Testing
     let koreanWord = $state("안녕하게요");
+    let block = $state("학");
+    let blockSimilar = $state("");
+    let test = $state("");
+    test = testString();
 
     const shuffledWords = (array) => {
         for (let i = array.length - 1; i > 0; i--) {
@@ -37,6 +43,7 @@
     }
 
     let initializeRound = () => {
+        blockSimilar = getSimilarBlock(block);
         selectLevelType();
         if ((levelType = "pairs")) {
             chosenPairs = shuffledWords(words).slice(0, pairAmount);
@@ -108,6 +115,8 @@
 <div class="base-layout">
     <h1>Hi there</h1>
     <p>Score: {score} Level: {level}</p>
+    <p>Testing: {test}</p>
+    <p>Block: {block} SimilarBlock: {blockSimilar}</p>
     <p>{koreanWord.charAt(0)}</p>
     <div class="card-grid-container">
         {#if levelType == "pairs"}
