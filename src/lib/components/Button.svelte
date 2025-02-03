@@ -81,6 +81,7 @@
     }
     .block-neutral {
         background-color: var(--color-neutral-700);
+        padding: var(--space-xs);
         &:hover {
             background-color: var(--color-neutral-600);
         }

@@ -19,9 +19,7 @@
     let selectedCards = $state([]);
     let failedTries = $state(0);
 
-    let levelType = $state("pairs"); // "pairs", "onetomany", "blockwriting"
-
-    let score = $state(0);
+    let levelType = $state("pairs"); // "pairs", "onetomany (wip)", "blockwriting"
 
     // For blockwriting level type
     let englishBlockWord = $state("");
@@ -73,6 +71,7 @@
         koreanBlockWord = "";
         englishBlockWord = "";
         failedTries = 0;
+        inputHint = "";
     }
 
     let initializeRound = () => {
@@ -126,8 +125,6 @@
                     (c) => c.korean !== selectedCards[0].korean,
                 );
 
-                console.log("Correct!");
-                score += 1;
                 if (englishCards.length == 0 && koreanCards.length == 0) {
                     levelCompleted();
                 }
@@ -171,7 +168,7 @@
 
 <div class="base-layout">
     <h1 class="text-align-center margin-top-m margin-bottom-s">GTLK</h1>
-    <p class="text-align-center">Score: {score} Level: {level}</p>
+    <p class="text-align-center">Level: {level}</p>
     {#if levelType === "pairs"}
         <div class="card-grid-container margin-inline-auto">
             <ul class="card-grid" role="list">
@@ -204,7 +201,7 @@
     {#if levelType === "blockwriting"}
         <div class="block-container flow margin-inline-auto">
             <h2 class="text-align-center">{englishBlockWord}</h2>
-            <p>{inputHint}</p>
+            <p class="text-align-center">{inputHint}</p>
             <p class="text-align-center">{blockInput || "---"}</p>
             <div class="korean-blocks-container">
                 {#each koreanBlockInputs as block}
@@ -222,7 +219,7 @@
     .card-grid-container {
         display: flex;
         justify-content: space-between;
-        padding: 2rem;
+        padding-block: var(--space-m);
         max-width: 400px;
         width: 100%;
         gap: var(--space-xl);
@@ -237,13 +234,13 @@
     .block-container {
         max-width: 400px;
         width: 100%;
-        padding: 2rem;
+        padding-block: var(--space-m);
     }
     .korean-blocks-container {
         display: flex;
         flex-direction: row;
         justify-content: center;
-        gap: var(--space-m);
+        gap: var(--space-s);
         flex: 1;
     }
 </style>
