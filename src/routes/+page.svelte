@@ -200,6 +200,12 @@
             }
         }
     };
+
+    function calculateCompletionRate(difficulty) {
+        const wordsOfDifficulty = words.filter(word => word.difficulty === difficulty);
+        const learnedWords = wordsOfDifficulty.filter(word => word.experience >= 25);
+        return (learnedWords.length / wordsOfDifficulty.length * 100).toFixed(2);
+    }
 </script>
 
 <div class="base-layout">
@@ -280,9 +286,9 @@
             >
         </div>
 
-        <p>Completion rate level 1 cards: 000</p>
-        <p>Completion rate level 2 cards: 000</p>
-        <p>Completion rate level 3 cards: 000</p>
+        <p>Completion rate level 1 cards: {calculateCompletionRate(1)}%</p>
+        <p>Completion rate level 2 cards: {calculateCompletionRate(2)}%</p>
+        <p>Completion rate level 3 cards: {calculateCompletionRate(3)}%</p>
     {/if}
 </div>
 
