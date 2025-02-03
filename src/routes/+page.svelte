@@ -181,8 +181,7 @@
 
 <div class="base-layout">
     {#if gameStart}
-        <h1 class="text-align-center margin-top-m margin-bottom-s">GTLK</h1>
-        <p class="text-align-center">Level: {level}</p>
+        <p class="text-align-center margin-top-l margin-bottom-s">Level: {level}</p>
         {#if levelType === "pairs"}
             <div class="card-grid-container margin-inline-auto">
                 <ul class="card-grid" role="list">
@@ -230,10 +229,15 @@
         {/if}
     {:else}
         <h1 class="text-align-center margin-top-m margin-bottom-s">Game To Learn Korean</h1>
+        <p>limit word pool to: unlimited, 50 words</p>
+        <p>difficulty of words: use level 1, use level 2, use level 3</p>
         <div class="margin-inline-auto" style="max-width: 350px; width: 100%">
-
             <Button type="accent grow" onclick={() => (gameStart = true)}>Start Game</Button>
         </div>
+
+        <p>Completion rate level 1 cards: 000</p>
+        <p>Completion rate level 2 cards: 000</p>
+        <p>Completion rate level 3 cards: 000</p>
     {/if}
 </div>
 
