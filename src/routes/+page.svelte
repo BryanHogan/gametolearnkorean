@@ -119,12 +119,11 @@
             if (
                 selectedCards[0].english == selectedCards[1].english &&
                 selectedCards[0].type != selectedCards[1].type
-            ) { // Maybe this filter needs to be more specific if words have same English or Korean translation
+            ) { 
                 updateExperience(selectedCards[0].korean, selectedCards[0].english, 3);
-                console.log(words);
                 englishCards = englishCards.filter(
                     (c) => c.english !== selectedCards[0].english,
-                );
+                ); // Maybe this filter needs to be more specific in case words have same English or Korean translation
                 koreanCards = koreanCards.filter(
                     (c) => c.korean !== selectedCards[0].korean,
                 );
@@ -145,6 +144,7 @@
 
         if (blockInput.length == koreanBlockWord.length) {
             if (blockInput === koreanBlockWord) {
+                updateExperience(chosenPairs[0].korean, chosenPairs[0].english, 5);
                 levelCompleted();
             } else {
                 failedTries += 1;

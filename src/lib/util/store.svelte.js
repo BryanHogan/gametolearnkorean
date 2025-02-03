@@ -21,6 +21,4 @@ const updateExperience = (koreanWord, englishWord, experience) => {
     }
 };
 
-updateExperience("사랑", "love", 1);
-
 export { wordData, saveWordData, updateExperience };
