@@ -11,6 +11,7 @@
 
     let words = wordData;
 
+    let gameStart = $state(false);
     let level = $state(1);
     let pairAmount = $derived(Math.min(level / 5 + 5, 10));
     let chosenPairs = $state([]);
@@ -119,8 +120,12 @@
             if (
                 selectedCards[0].english == selectedCards[1].english &&
                 selectedCards[0].type != selectedCards[1].type
-            ) { 
-                updateExperience(selectedCards[0].korean, selectedCards[0].english, 3);
+            ) {
+                updateExperience(
+                    selectedCards[0].korean,
+                    selectedCards[0].english,
+                    3,
+                );
                 englishCards = englishCards.filter(
                     (c) => c.english !== selectedCards[0].english,
                 ); // Maybe this filter needs to be more specific in case words have same English or Korean translation
@@ -144,7 +149,11 @@
 
         if (blockInput.length == koreanBlockWord.length) {
             if (blockInput === koreanBlockWord) {
-                updateExperience(chosenPairs[0].korean, chosenPairs[0].english, 5);
+                updateExperience(
+                    chosenPairs[0].korean,
+                    chosenPairs[0].english,
+                    5,
+                );
                 levelCompleted();
             } else {
                 failedTries += 1;
@@ -171,50 +180,59 @@
 </script>
 
 <div class="base-layout">
-    <h1 class="text-align-center margin-top-m margin-bottom-s">GTLK</h1>
-    <p class="text-align-center">Level: {level}</p>
-    {#if levelType === "pairs"}
-        <div class="card-grid-container margin-inline-auto">
-            <ul class="card-grid" role="list">
-                {#each englishCards as card}
-                    <li>
-                        <Button
-                            type={"grow card-neutral " +
-                                (card.selected ? "selected" : "")}
-                            onclick={() => cardPicked(card)}
-                            ><p>{card.english}</p></Button
-                        >
-                    </li>
-                {/each}
-            </ul>
-            <ul class="card-grid" role="list">
-                {#each koreanCards as card}
-                    <li>
-                        <Button
-                            type={"grow card-neutral " +
-                                (card.selected ? "selected" : "")}
-                            onclick={() => cardPicked(card)}
-                            ><p>{card.korean}</p></Button
-                        >
-                    </li>
-                {/each}
-            </ul>
-        </div>
-    {/if}
-
-    {#if levelType === "blockwriting"}
-        <div class="block-container flow margin-inline-auto">
-            <h2 class="text-align-center">{englishBlockWord}</h2>
-            <p class="text-align-center">{inputHint}</p>
-            <p class="text-align-center">{blockInput || "---"}</p>
-            <div class="korean-blocks-container">
-                {#each koreanBlockInputs as block}
-                    <Button
-                        type="block-neutral"
-                        onclick={() => blockButtonInput(block)}>{block}</Button
-                    >
-                {/each}
+    {#if gameStart}
+        <h1 class="text-align-center margin-top-m margin-bottom-s">GTLK</h1>
+        <p class="text-align-center">Level: {level}</p>
+        {#if levelType === "pairs"}
+            <div class="card-grid-container margin-inline-auto">
+                <ul class="card-grid" role="list">
+                    {#each englishCards as card}
+                        <li>
+                            <Button
+                                type={"grow card-neutral " +
+                                    (card.selected ? "selected" : "")}
+                                onclick={() => cardPicked(card)}
+                                ><p>{card.english}</p></Button
+                            >
+                        </li>
+                    {/each}
+                </ul>
+                <ul class="card-grid" role="list">
+                    {#each koreanCards as card}
+                        <li>
+                            <Button
+                                type={"grow card-neutral " +
+                                    (card.selected ? "selected" : "")}
+                                onclick={() => cardPicked(card)}
+                                ><p>{card.korean}</p></Button
+                            >
+                        </li>
+                    {/each}
+                </ul>
             </div>
+        {/if}
+
+        {#if levelType === "blockwriting"}
+            <div class="block-container flow margin-inline-auto">
+                <h2 class="text-align-center">{englishBlockWord}</h2>
+                <p class="text-align-center">{inputHint}</p>
+                <p class="text-align-center">{blockInput || "---"}</p>
+                <div class="korean-blocks-container">
+                    {#each koreanBlockInputs as block}
+                        <Button
+                            type="block-neutral"
+                            onclick={() => blockButtonInput(block)}
+                            >{block}</Button
+                        >
+                    {/each}
+                </div>
+            </div>
+        {/if}
+    {:else}
+        <h1 class="text-align-center margin-top-m margin-bottom-s">Game To Learn Korean</h1>
+        <div class="margin-inline-auto" style="max-width: 350px; width: 100%">
+
+            <Button type="accent grow" onclick={() => (gameStart = true)}>Start Game</Button>
         </div>
     {/if}
 </div>
@@ -231,7 +249,8 @@
     .card-grid {
         display: grid;
         grid-template-columns: 1fr;
-        grid-auto-rows: 4rem;
+        grid-auto-rows: 1fr;
+        row-gap: var(--space-m);
         grid-auto-flow: row;
         flex: 1;
     }
@@ -242,6 +261,7 @@
     }
     .korean-blocks-container {
         display: flex;
+        flex-wrap: wrap;
         flex-direction: row;
         justify-content: center;
         gap: var(--space-s);

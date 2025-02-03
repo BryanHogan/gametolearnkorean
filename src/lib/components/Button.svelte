@@ -54,7 +54,7 @@
     .accent {
         background-color: var(--color-accent-700);
         &:hover, &:focus-within {
-            background-color: var(--color-accent-500);
+            background-color: var(--color-accent-900);
         }
     }
     .accent-low {
