@@ -1,6 +1,6 @@
 <script>
     import Button from "$lib/components/Button.svelte";
-    import words from "$lib/data/words.json";
+    import { wordData, updateExperience } from "$lib/util/store.svelte.js";
     import {
         getSimilarBlock,
         getRandomKoreanBlock,
@@ -8,6 +8,8 @@
 
     // set words array (if one exist in local storage use that, if not create new)
     // -> then use that as base for initializeRound
+
+    let words = wordData;
 
     let level = $state(1);
     let pairAmount = $derived(Math.min(level / 5 + 5, 10));
@@ -117,7 +119,9 @@
             if (
                 selectedCards[0].english == selectedCards[1].english &&
                 selectedCards[0].type != selectedCards[1].type
-            ) {
+            ) { // Maybe this filter needs to be more specific if words have same English or Korean translation
+                updateExperience(selectedCards[0].korean, selectedCards[0].english, 3);
+                console.log(words);
                 englishCards = englishCards.filter(
                     (c) => c.english !== selectedCards[0].english,
                 );
