@@ -10,7 +10,7 @@
     // -> then use that as base for initializeRound
 
     let words = wordData;
-    let wordPool = words;
+    let wordPool;
 
     let gameStart = $state(false);
     let level = $state(1);
@@ -101,9 +101,8 @@
         failedTries = 0;
         inputHint = "";
     }
-    
 
-    let initializeRound = () => {
+    function initializeRound() {
         levelReset();
         selectLevelType();
         if (levelType === "pairs") {
@@ -201,8 +200,6 @@
             }
         }
     };
-
-    initializeRound();
 </script>
 
 <div class="base-layout">
