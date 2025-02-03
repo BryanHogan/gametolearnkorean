@@ -10,6 +10,7 @@
     // -> then use that as base for initializeRound
 
     let words = wordData;
+    let wordPool = words;
 
     let gameStart = $state(false);
     let level = $state(1);
@@ -32,6 +33,12 @@
     let blockInput = $state("");
     let inputHint = $state("");
 
+    // Options at game start
+    let wordPoolLimit = $state("unlimited");
+    let includeLevel1Cards = $state(true);
+    let includeLevel2Cards = $state(false);
+    let includeLevel3Cards = $state(false);
+
     function getSimilarBlockInputs() {
         let inputs = koreanBlocks.flatMap((block) => [
             block,
@@ -46,6 +53,24 @@
         inputs = [...new Set(inputs)];
         inputs = shuffledWords(inputs);
         koreanBlockInputs = inputs;
+    }
+
+    function startGame() {
+        gameStart = true;
+        levelReset();
+        let filteredWords = words.filter((word) => {
+            return (
+                (includeLevel1Cards && word.difficulty === 1) ||
+                (includeLevel2Cards && word.difficulty === 2) ||
+                (includeLevel3Cards && word.difficulty === 3)
+            );
+        });
+        if (wordPoolLimit == "unlimited") {
+            wordPool = filteredWords;
+        } else if (wordPoolLimit == "50") {
+            wordPool = shuffledWords(filteredWords).slice(0, 50);
+        }
+        initializeRound();
     }
 
     const shuffledWords = (array) => {
@@ -76,12 +101,13 @@
         failedTries = 0;
         inputHint = "";
     }
+    
 
     let initializeRound = () => {
         levelReset();
         selectLevelType();
         if (levelType === "pairs") {
-            chosenPairs = shuffledWords(words).slice(0, pairAmount);
+            chosenPairs = shuffledWords(wordPool).slice(0, pairAmount);
 
             const averageExperience =
                 chosenPairs.reduce((sum, pair) => sum + pair.experience, 0) /
@@ -90,7 +116,7 @@
             if (averageExperience > 3 && chosenPairs.length > 3) {
                 chosenPairs.sort((a, b) => b.experience - a.experience);
                 chosenPairs.splice(0, 3);
-                const newPairs = shuffledWords(words).slice(0, 3);
+                const newPairs = shuffledWords(wordPool).slice(0, 3);
                 chosenPairs = chosenPairs.concat(newPairs);
             }
             englishCards = chosenPairs.map((card) => ({
@@ -105,7 +131,7 @@
             koreanCards = shuffledWords(koreanCards);
         }
         if (levelType === "blockwriting") {
-            chosenPairs = shuffledWords(words).slice(0, 1); // add condition for certain experience level needed later
+            chosenPairs = shuffledWords(wordPool).slice(0, 1); // add condition for certain experience level needed later
             englishBlockWord = chosenPairs[0].english;
             koreanBlockWord = chosenPairs[0].korean;
             koreanBlocks = chosenPairs[0].korean.split("");
@@ -181,7 +207,9 @@
 
 <div class="base-layout">
     {#if gameStart}
-        <p class="text-align-center margin-top-l margin-bottom-s">Level: {level}</p>
+        <p class="text-align-center margin-top-l margin-bottom-s">
+            Level: {level}
+        </p>
         {#if levelType === "pairs"}
             <div class="card-grid-container margin-inline-auto">
                 <ul class="card-grid" role="list">
@@ -228,11 +256,31 @@
             </div>
         {/if}
     {:else}
-        <h1 class="text-align-center margin-top-m margin-bottom-s">Game To Learn Korean</h1>
-        <p>limit word pool to: unlimited, 50 words</p>
-        <p>difficulty of words: use level 1, use level 2, use level 3</p>
+        <h1 class="text-align-center margin-top-m margin-bottom-s">
+            Game To Learn Korean
+        </h1>
+        <label for={wordPoolLimit}>Select wordpool to use:</label>
+        <select bind:value={wordPoolLimit}>
+            <option value="unlimited">Unlimited</option>
+            <option value="50">50 words</option>
+        </select>
+        <p>Select difficulty levels to include:</p>
+        <label>
+            <input type="checkbox" bind:checked={includeLevel1Cards} />
+            Level 1
+        </label>
+        <label>
+            <input type="checkbox" bind:checked={includeLevel2Cards} />
+            Level 2
+        </label>
+        <label>
+            <input type="checkbox" bind:checked={includeLevel3Cards} />
+            Level 3
+        </label>
         <div class="margin-inline-auto" style="max-width: 350px; width: 100%">
-            <Button type="accent grow" onclick={() => (gameStart = true)}>Start Game</Button>
+            <Button type="accent grow" onclick={() => startGame()}
+                >Start Game</Button
+            >
         </div>
 
         <p>Completion rate level 1 cards: 000</p>
