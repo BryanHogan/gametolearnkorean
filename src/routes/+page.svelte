@@ -10,13 +10,14 @@
     // -> then use that as base for initializeRound
 
     let level = $state(1);
-    let pairAmount = $derived(Math.min((level / 5) + 5, 10));
+    let pairAmount = $derived(Math.min(level / 5 + 5, 10));
     let chosenPairs = $state([]);
 
     let englishCards = $state([]);
     let koreanCards = $state([]);
 
     let selectedCards = $state([]);
+    let failedTries = $state(0);
 
     let levelType = $state("pairs"); // "pairs", "onetomany", "blockwriting"
 
@@ -28,6 +29,7 @@
     let koreanBlocks = $state([""]);
     let koreanBlockInputs = $state([]);
     let blockInput = $state("");
+    let inputHint = $state("");
 
     function getSimilarBlockInputs() {
         let inputs = koreanBlocks.flatMap((block) => [
@@ -52,6 +54,7 @@
         }
         return array;
     };
+    // change to 5 === 0 later
     function selectLevelType() {
         if (level % 2 === 1) {
             levelType = "blockwriting";
@@ -65,10 +68,15 @@
         initializeRound();
     }
 
-    let initializeRound = () => {
+    function levelReset() {
         blockInput = "";
         koreanBlockWord = "";
         englishBlockWord = "";
+        failedTries = 0;
+    }
+
+    let initializeRound = () => {
+        levelReset();
         selectLevelType();
         if (levelType === "pairs") {
             chosenPairs = shuffledWords(words).slice(0, pairAmount);
@@ -138,19 +146,34 @@
             if (blockInput === koreanBlockWord) {
                 levelCompleted();
             } else {
+                failedTries += 1;
+                if (failedTries >= 3) {
+                    inputHint =
+                        "Hint: " +
+                        koreanBlockWord.slice(
+                            0,
+                            Math.max(
+                                0,
+                                Math.min(
+                                    failedTries - 2,
+                                    koreanBlockWord.length,
+                                ),
+                            ),
+                        );
+                }
                 blockInput = "";
             }
         }
-    }
+    };
 
     initializeRound();
 </script>
 
 <div class="base-layout">
-    <h1>Hi there</h1>
-    <p>Score: {score} Level: {level}</p>
+    <h1 class="text-align-center margin-top-m margin-bottom-s">GTLK</h1>
+    <p class="text-align-center">Score: {score} Level: {level}</p>
     {#if levelType === "pairs"}
-        <div class="card-grid-container">
+        <div class="card-grid-container margin-inline-auto">
             <ul class="card-grid" role="list">
                 {#each englishCards as card}
                     <li>
@@ -179,12 +202,16 @@
     {/if}
 
     {#if levelType === "blockwriting"}
-        <div class="block-container">
-            <p class="text-align-center">{englishBlockWord}</p>
-            <p>{blockInput}</p>
+        <div class="block-container flow margin-inline-auto">
+            <h2 class="text-align-center">{englishBlockWord}</h2>
+            <p>{inputHint}</p>
+            <p class="text-align-center">{blockInput || "---"}</p>
             <div class="korean-blocks-container">
                 {#each koreanBlockInputs as block}
-                    <Button type="block-neutral" onclick={() => blockButtonInput(block)}>{block}</Button>
+                    <Button
+                        type="block-neutral"
+                        onclick={() => blockButtonInput(block)}>{block}</Button
+                    >
                 {/each}
             </div>
         </div>
@@ -194,10 +221,10 @@
 <style>
     .card-grid-container {
         display: flex;
-        border: 1px solid red;
         justify-content: space-between;
         padding: 2rem;
         max-width: 400px;
+        width: 100%;
         gap: var(--space-xl);
     }
     .card-grid {
@@ -209,14 +236,14 @@
     }
     .block-container {
         max-width: 400px;
-        border: 1px solid red;
+        width: 100%;
         padding: 2rem;
     }
     .korean-blocks-container {
         display: flex;
         flex-direction: row;
         justify-content: center;
-        gap: var(--space-s);
+        gap: var(--space-m);
         flex: 1;
     }
 </style>
