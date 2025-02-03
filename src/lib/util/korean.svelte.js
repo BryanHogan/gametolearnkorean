@@ -45,7 +45,3 @@ export function getRandomKoreanBlock() {
     const randomIndex = Math.floor(Math.random() * commonKoreanBlocks.length);
     return commonKoreanBlocks[randomIndex];
 }
-
-export function testString() {
-    return disassemble('값');
-}

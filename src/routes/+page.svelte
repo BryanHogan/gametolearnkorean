@@ -2,7 +2,6 @@
     import Button from "$lib/components/Button.svelte";
     import words from "$lib/data/words.json";
     import {
-        testString,
         getSimilarBlock,
         getRandomKoreanBlock,
     } from "$lib/util/korean.svelte";
@@ -11,7 +10,7 @@
     // -> then use that as base for initializeRound
 
     let level = $state(1);
-    let pairAmount = $derived(Math.min(level + 4, 12));
+    let pairAmount = $derived(Math.min((level / 5) + 5, 10));
     let chosenPairs = $state([]);
 
     let englishCards = $state([]);
@@ -23,13 +22,7 @@
 
     let score = $state(0);
 
-    // Testing
-    let koreanWord = $state("안녕하게요");
-    let block = $state(["학", "로", "드", "새", "샗", "항"]);
-    let blockSimilar = $state([]);
-    let test = $state("");
-    test = testString();
-
+    // For blockwriting level type
     let englishBlockWord = $state("");
     let koreanBlockWord = $state("");
     let koreanBlocks = $state([""]);
@@ -60,7 +53,11 @@
         return array;
     };
     function selectLevelType() {
-        levelType = "blockwriting";
+        if (level % 5 === 0) {
+            levelType = "blockwriting";
+        } else {
+            levelType = "pairs";
+        }
     }
 
     function levelCompleted() {
@@ -152,12 +149,6 @@
 <div class="base-layout">
     <h1>Hi there</h1>
     <p>Score: {score} Level: {level}</p>
-    <p>Testing: {test}</p>
-    <p>Block: {block} SimilarBlock: {blockSimilar}</p>
-    <p>englishBlockWord: {englishBlockWord} koreanBlocks: {koreanBlocks}</p>
-    <p>koreanBlockInputs: {koreanBlockInputs}</p>
-
-    <p>{koreanWord.charAt(0)}</p>
     {#if levelType === "pairs"}
         <div class="card-grid-container">
             <ul class="card-grid" role="list">
