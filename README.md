@@ -1,6 +1,9 @@
 # Game To Learn Korean
 
-Make learning with flashcards more fun with gamification.
+Make learning with flashcards more efficient and fun with a gamification approach.
+
+Website not yet available.  
+App not yet available.
 
 ## Tech-Stack
 
