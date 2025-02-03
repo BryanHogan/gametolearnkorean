@@ -79,6 +79,12 @@
     .card-neutral {
         background-color: var(--color-neutral-700);
     }
+    .block-neutral {
+        background-color: var(--color-neutral-700);
+        &:hover {
+            background-color: var(--color-neutral-600);
+        }
+    }
     .selected {
         background-color: var(--color-accent-700);
     }

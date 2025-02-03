@@ -53,7 +53,7 @@
         return array;
     };
     function selectLevelType() {
-        if (level % 5 === 0) {
+        if (level % 2 === 1) {
             levelType = "blockwriting";
         } else {
             levelType = "pairs";
@@ -184,7 +184,7 @@
             <p>{blockInput}</p>
             <div class="korean-blocks-container">
                 {#each koreanBlockInputs as block}
-                    <Button onclick={() => blockButtonInput(block)}>{block}</Button>
+                    <Button type="block-neutral" onclick={() => blockButtonInput(block)}>{block}</Button>
                 {/each}
             </div>
         </div>
