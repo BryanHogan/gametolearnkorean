@@ -31,8 +31,10 @@
     test = testString();
 
     let englishBlockWord = $state("");
+    let koreanBlockWord = $state("");
     let koreanBlocks = $state([""]);
     let koreanBlockInputs = $state([]);
+    let blockInput = $state("");
 
     function getSimilarBlockInputs() {
         let inputs = koreanBlocks.flatMap((block) => [
@@ -45,9 +47,9 @@
             inputs = [...new Set(inputs)];
         }
         inputs.push(getRandomKoreanBlock(), getRandomKoreanBlock());
-
         inputs = [...new Set(inputs)];
-        return inputs;
+        inputs = shuffledWords(inputs);
+        koreanBlockInputs = inputs;
     }
 
     const shuffledWords = (array) => {
@@ -58,7 +60,7 @@
         return array;
     };
     function selectLevelType() {
-        levelType = "pairs";
+        levelType = "blockwriting";
     }
 
     function levelCompleted() {
@@ -67,9 +69,11 @@
     }
 
     let initializeRound = () => {
-        blockSimilar = block.map((char) => getSimilarBlock(char));
+        blockInput = "";
+        koreanBlockWord = "";
+        englishBlockWord = "";
         selectLevelType();
-        if ((levelType === "pairs")) {
+        if (levelType === "pairs") {
             chosenPairs = shuffledWords(words).slice(0, pairAmount);
 
             const averageExperience =
@@ -93,9 +97,10 @@
             }));
             koreanCards = shuffledWords(koreanCards);
         }
-        if ((levelType === "blockwriting")) {
+        if (levelType === "blockwriting") {
             chosenPairs = shuffledWords(words).slice(0, 1); // add condition for certain experience level needed later
             englishBlockWord = chosenPairs[0].english;
+            koreanBlockWord = chosenPairs[0].korean;
             koreanBlocks = chosenPairs[0].korean.split("");
             getSimilarBlockInputs();
         }
@@ -128,6 +133,19 @@
         }
     };
 
+    const blockButtonInput = (block) => {
+        blockInput = blockInput + block;
+        console.log(blockInput);
+
+        if (blockInput.length == koreanBlockWord.length) {
+            if (blockInput === koreanBlockWord) {
+                levelCompleted();
+            } else {
+                blockInput = "";
+            }
+        }
+    }
+
     initializeRound();
 </script>
 
@@ -140,8 +158,8 @@
     <p>koreanBlockInputs: {koreanBlockInputs}</p>
 
     <p>{koreanWord.charAt(0)}</p>
-    <div class="card-grid-container">
-        {#if levelType == "pairs"}
+    {#if levelType === "pairs"}
+        <div class="card-grid-container">
             <ul class="card-grid" role="list">
                 {#each englishCards as card}
                     <li>
@@ -166,8 +184,20 @@
                     </li>
                 {/each}
             </ul>
-        {/if}
-    </div>
+        </div>
+    {/if}
+
+    {#if levelType === "blockwriting"}
+        <div class="block-container">
+            <p class="text-align-center">{englishBlockWord}</p>
+            <p>{blockInput}</p>
+            <div class="korean-blocks-container">
+                {#each koreanBlockInputs as block}
+                    <Button onclick={() => blockButtonInput(block)}>{block}</Button>
+                {/each}
+            </div>
+        </div>
+    {/if}
 </div>
 
 <style>
@@ -184,6 +214,18 @@
         grid-template-columns: 1fr;
         grid-auto-rows: 4rem;
         grid-auto-flow: row;
+        flex: 1;
+    }
+    .block-container {
+        max-width: 400px;
+        border: 1px solid red;
+        padding: 2rem;
+    }
+    .korean-blocks-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        gap: var(--space-s);
         flex: 1;
     }
 </style>
