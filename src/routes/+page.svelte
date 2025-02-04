@@ -346,7 +346,7 @@
             display: flex;
             flex-wrap: wrap;
             justify-content: flex-start;
-            gap: var(--space-m);
+            gap: var(--space-s);
             & >* {
                 border: 1px solid var(--color-neutral-700);
                 padding: var(--space-2xs);
