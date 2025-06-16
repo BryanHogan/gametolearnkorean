@@ -108,3 +108,8 @@ Deleting `node_modules` and `package-lock.json` and using pnpm instead solved th
 ## Additional Notes
 
 Tauri has recently added the option to not only turn your website into a Windows and Mac app, but also Android and iOS. But that it's still very new and has a much smaller plugin ecosystem.
+
+## Fix in the future
+
+- 눈 shows up two twice, need to handle this better
+- Use IndexedDB instead of LocalStorage, give entries ids
