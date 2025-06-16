@@ -1,10 +1,13 @@
 import words from "$lib/data/words.json";
 
-let wordData = [];
+const withExperience = arr => arr.map(w => ({ ...w, experience: 0 }));
+
+let wordData;
 if (typeof window !== "undefined") {
-    wordData = JSON.parse(localStorage.getItem("wordData")) || words;
+    const stored = localStorage.getItem("wordData");
+    wordData = stored ? JSON.parse(stored) : withExperience(words);
 } else {
-    wordData = words;
+    wordData = withExperience(words);
 }
 
 const saveWordData = () => {
@@ -13,10 +16,12 @@ const saveWordData = () => {
     }
 };
 
-const updateExperience = (koreanWord, englishWord, experience) => {
-    const word = wordData.find(w => w.korean === koreanWord && w.english === englishWord);
+const updateExperience = (koreanWord, englishWord, experienceAmount = 1) => {
+    const word = wordData.find(
+        w => w.korean === koreanWord && w.english === englishWord
+    );
     if (word) {
-        word.experience += experience;
+        word.experience += experienceAmount;
         saveWordData();
     }
 };
