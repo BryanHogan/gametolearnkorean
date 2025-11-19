@@ -1,5 +1,6 @@
 import { getSimilarBlock, getRandomKoreanBlock } from "$lib/util/korean.svelte";
 import { wordData, updateExperience } from "$lib/util/store.svelte.js";
+import { BlockMode } from "$lib/util/modes/block-mode.svelte.js";
 
 export class Game {
     // Game State
@@ -16,15 +17,10 @@ export class Game {
     englishCards = $state([]);
     koreanCards = $state([]);
     selectedCards = $state([]);
-    
-    // Block Writing State
-    englishBlockWord = $state("");
-    koreanBlockWord = $state("");
-    koreanBlocks = $state([""]);
-    koreanBlockInputs = $state([]);
-    blockInput = $state("");
-    inputHint = $state("");
     failedTries = $state(0);
+    
+    // Modes
+    blockMode = new BlockMode(this);
 
     // Many Vs One State
     manyVsOneTarget = $state(null);
@@ -93,11 +89,7 @@ export class Game {
     }
 
     levelReset() {
-        this.blockInput = "";
-        this.koreanBlockWord = "";
-        this.englishBlockWord = "";
         this.failedTries = 0;
-        this.inputHint = "";
         this.selectedCards = [];
     }
 
@@ -138,25 +130,7 @@ export class Game {
 
     setupBlockWritingRound() {
         this.chosenPairs = this.shuffledWords(this.wordPool).slice(0, 1);
-        this.englishBlockWord = this.chosenPairs[0].english;
-        this.koreanBlockWord = this.chosenPairs[0].korean;
-        this.koreanBlocks = this.chosenPairs[0].korean.split("");
-        this.getSimilarBlockInputs();
-    }
-
-    getSimilarBlockInputs() {
-        let inputs = this.koreanBlocks.flatMap((block) => [
-            block,
-            ...getSimilarBlock(block),
-        ]);
-        while (inputs.length < 2) {
-            let extra = this.koreanBlocks.flatMap(getSimilarBlock).flat();
-            inputs.push(...extra);
-            inputs = [...new Set(inputs)];
-        }
-        inputs.push(getRandomKoreanBlock(), getRandomKoreanBlock());
-        inputs = [...new Set(inputs)];
-        this.koreanBlockInputs = this.shuffledWords(inputs);
+        this.blockMode.setup(this.chosenPairs[0]);
     }
 
     setupManyVsOneRound() {
@@ -209,23 +183,6 @@ export class Game {
             // Reset selection
             this.selectedCards.forEach(c => c.selected = false);
             this.selectedCards = [];
-        }
-    }
-
-    handleBlockInput(block) {
-        this.blockInput += block;
-        
-        if (this.blockInput.length === this.koreanBlockWord.length) {
-            if (this.blockInput === this.koreanBlockWord) {
-                updateExperience(this.chosenPairs[0].korean, this.chosenPairs[0].english, 5);
-                this.levelCompleted();
-            } else {
-                this.failedTries += 1;
-                if (this.failedTries >= 3) {
-                    this.inputHint = "Hint: " + this.koreanBlockWord.slice(0, Math.max(0, Math.min(this.failedTries - 2, this.koreanBlockWord.length)));
-                }
-                this.blockInput = "";
-            }
         }
     }
 
