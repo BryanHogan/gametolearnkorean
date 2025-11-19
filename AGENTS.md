@@ -1,7 +1,7 @@
 # Game To Learn Korean — Agent Guide
 
 ## Project Overview
-**Game To Learn Korean** is a gamified flashcard app for learning Hangul and vocabulary.
+**Game To Learn Korean** is a gamified flashcard-like app for learning Korean. A way to learn new Korean vocabulary fast and in a more fun way.
 - **Stack**: SvelteKit 2 (Static), Vite 5, Svelte 5 Runes, Capacitor 6 (Android).
 - **Data**: `src/lib/data/words.json` (static) + `localStorage` (user progress).
 - **Design**: Mobile-first, dark mode default.
