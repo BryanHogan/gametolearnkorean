@@ -3,8 +3,8 @@
     let isInfoOpen = $state(false);
     let isSettingsOpen = $state(false);
     let headerEl;
-    let infoModalEl;
-    let settingsModalEl;
+    let infoModalEl = $state(false);
+    let settingsModalEl = $state(false);
 
     const toggleMenu = (event) => {
         event.stopPropagation();
@@ -110,7 +110,6 @@
             </header>
             <p>
                 Practice Korean vocabulary with quick, mobile-friendly rounds.
-                Progress is saved on your device while you play.
             </p>
         </section>
     </div>
@@ -130,7 +129,7 @@
                 <button type="button" class="close" onclick={closeAll}>X</button>
             </header>
             <p>
-                Settings are coming soon. For now, keep leveling up your vocab streak!
+                Settings are coming soon.
             </p>
         </section>
     </div>
