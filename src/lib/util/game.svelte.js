@@ -1,12 +1,11 @@
-import { getSimilarBlock, getRandomKoreanBlock } from "$lib/util/korean.svelte";
 import { wordData, updateExperience } from "$lib/util/store.svelte.js";
-import { BlockMode } from "$lib/util/modes/block-mode.svelte.js";
+import { BlockTask } from "$lib/util/tasks/block-task.svelte.js";
 
 export class Game {
     // Game State
     gameStart = $state(false);
     level = $state(1);
-    levelType = $state("pairs"); // "pairs", "blockwriting", "manyvsone"
+    taskType = $state("pairs"); // "pairs", "blockwriting", "manyvsone"
     
     // Data
     words = wordData;
@@ -19,13 +18,13 @@ export class Game {
     selectedCards = $state([]);
     failedTries = $state(0);
     
-    // Modes
-    blockMode = new BlockMode(this);
+    // Task Types
+    blockTask = new BlockTask(this);
 
     // Many Vs One State
     manyVsOneTarget = $state(null);
     manyVsOneOptions = $state([]);
-    manyVsOneModeType = $state("english-to-korean");
+    manyVsOnePromptDirection = $state("english-to-korean");
 
     // Options
     wordPoolLimit = $state("unlimited");
@@ -71,15 +70,15 @@ export class Game {
         return newArray;
     }
 
-    selectLevelType() {
-        // Cycle through modes: Pairs -> Blockwriting -> ManyVsOne
-        const mode = this.level % 3;
-        if (mode === 1) {
-            this.levelType = "blockwriting";
-        } else if (mode === 2) {
-            this.levelType = "manyvsone";
+    selectTaskType() {
+        // Cycle through task types: Pairs -> Blockwriting -> ManyVsOne
+        const taskRotation = this.level % 3;
+        if (taskRotation === 1) {
+            this.taskType = "blockwriting";
+        } else if (taskRotation === 2) {
+            this.taskType = "manyvsone";
         } else {
-            this.levelType = "pairs";
+            this.taskType = "pairs";
         }
     }
 
@@ -95,13 +94,13 @@ export class Game {
 
     initializeRound() {
         this.levelReset();
-        this.selectLevelType();
+        this.selectTaskType();
 
-        if (this.levelType === "pairs") {
+        if (this.taskType === "pairs") {
             this.setupPairsRound();
-        } else if (this.levelType === "blockwriting") {
+        } else if (this.taskType === "blockwriting") {
             this.setupBlockWritingRound();
-        } else if (this.levelType === "manyvsone") {
+        } else if (this.taskType === "manyvsone") {
             this.setupManyVsOneRound();
         }
     }
@@ -130,7 +129,7 @@ export class Game {
 
     setupBlockWritingRound() {
         this.chosenPairs = this.shuffledWords(this.wordPool).slice(0, 1);
-        this.blockMode.setup(this.chosenPairs[0]);
+        this.blockTask.setup(this.chosenPairs[0]);
     }
 
     setupManyVsOneRound() {
@@ -151,7 +150,7 @@ export class Game {
         this.manyVsOneOptions = this.shuffledWords(options);
         
         // Randomize direction
-        this.manyVsOneModeType = Math.random() > 0.5 ? "english-to-korean" : "korean-to-english";
+        this.manyVsOnePromptDirection = Math.random() > 0.5 ? "english-to-korean" : "korean-to-english";
     }
 
     // --- Interaction Logic ---

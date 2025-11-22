@@ -7,22 +7,22 @@ I want to achieve this experience for this Korean learning and practice app:
     *   *Future Feature:* A field to add a note on how they remember this word (mnemonic) will be added later. These notes will be saved permanently and tied to the word.
     *   M*Future View:* A "Dictionary" view will allow users to see all learned words and their notes.
 4. Then the gamified Anki / Duolingo style learning / practice part starts.
-    *   *Progression:* For each word, the user aims to "master" it by passing all modes.
-    *   *Flow:* The game mode changes frequently to keep things interesting.
+    *   *Progression:* For each word, the user aims to "master" it by passing all task types.
+    *   *Flow:* The task type changes frequently to keep things interesting.
     *   *Stage Logic:* A word tracks a **progression score** to determine its mastery level:
-        *   **0:** Not yet learned (Needs to pass Mode A). All words start at 0 for the current session, regardless of global "learned" status.
-        *   **1:** Passed Mode A (Many vs Many) on the first try.
-        *   **2:** Passed Mode B (Many vs One) on the first try.
-        *   **3:** Passed Mode C (Block writing) on the first try.
-        *   **4:** Passed Mode D (Free-form writing) on the first try (Session Complete for this word).
-        *   Even if a word is at a high score (e.g. 3), it can still appear in lower modes (A or B).
-        *   The game biases towards showing words in the mode corresponding to their current score (e.g. Score 2 words appear in Mode C) to push progress, but mixes in words from with lower progress score as well.
+        *   **0:** Not yet learned (Needs to pass Task Type A). All words start at 0 for the current session, regardless of global "learned" status.
+        *   **1:** Passed Task Type A (Many vs Many) on the first try.
+        *   **2:** Passed Task Type B (Many vs One) on the first try.
+        *   **3:** Passed Task Type C (Block writing) on the first try.
+        *   **4:** Passed Task Type D (Free-form writing) on the first try (Session Complete for this word).
+        *   Even if a word is at a high score (e.g. 3), it can still appear in lower task types (A or B).
+        *   The game biases towards showing words in the task type corresponding to their current score (e.g. Score 2 words appear in Task Type C) to push progress, but mixes in words from with lower progress score as well.
     *   *Failure:*
         *   If a user gets a word wrong (mismatch or typo), they must retry immediately until correct.
         *   **Penalty:** The word does *not* advance a stage if failed first. Crucially, **the word moves down a stage** (current progression score - 1) upon failure.
-    *   *Goal:* The session ends when all selected words have passed the final mode (Mode D), so when all words have a progress score of 4.
+    *   *Goal:* The session ends when all selected words have passed the final task type (Task Type D), so when all words have a progress score of 4.
 
-The different modes are:
+The different task types are:
 	A) **Matching pairs: Many vs many.** Multiple cards are presented on both sides (English left, Korean right). The user matches correct pairs. Matched pairs are removed. Stage clears when all are matched. Scoring is per-word (individual success/fail).
 	B) **Matching pairs: Many vs one (Multiple Choice).**
         *   Scenario 1: Show 1 English word, user picks from 4 Korean options.

@@ -1,7 +1,7 @@
 import { getSimilarBlock, getRandomKoreanBlock } from "$lib/util/korean.svelte";
 import { updateExperience } from "$lib/util/store.svelte.js";
 
-export class BlockMode {
+export class BlockTask {
     game = null;
     
     englishBlockWord = $state("");

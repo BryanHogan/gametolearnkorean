@@ -3,10 +3,14 @@
     
     let { game } = $props();
     
-    let prompt = $derived(game.manyVsOneModeType === "english-to-korean" ? game.manyVsOneTarget.english : game.manyVsOneTarget.korean);
+    let prompt = $derived(
+        game.manyVsOnePromptDirection === "english-to-korean"
+            ? game.manyVsOneTarget.english
+            : game.manyVsOneTarget.korean
+    );
 </script>
 
-<div class="mode-container flow margin-inline-auto">
+<div class="task-container flow margin-inline-auto">
     <h2 class="text-align-center margin-bottom-m">{prompt}</h2>
     
     <div class="options-grid">
@@ -15,7 +19,7 @@
                 type="grow card-neutral" 
                 onclick={() => game.handleManyVsOneChoice(option)}
             >
-                {#if game.manyVsOneModeType === "english-to-korean"}
+                {#if game.manyVsOnePromptDirection === "english-to-korean"}
                     {option.korean}
                 {:else}
                     {option.english}
@@ -26,7 +30,7 @@
 </div>
 
 <style>
-    .mode-container {
+    .task-container {
         max-width: 400px;
         width: 100%;
         padding-block: var(--space-m);

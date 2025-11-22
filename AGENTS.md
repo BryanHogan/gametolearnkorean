@@ -13,11 +13,11 @@
 4. **Structure**: Keep `+page.svelte` for orchestration. Move logic to `src/lib/util` and UI to `src/lib/components`.
 
 ## Core Game Logic
-- **Modes**: Alternates between **Pairs** (match cards) and **Blockwriting** (assemble Hangul).
+- **Game Types vs Task Types**: Win conditions are defined as game types (e.g., survival, mastery). Task types rotate between **Pairs** (match cards), **Many-vs-One** (multiple choice), and **Blockwriting** (assemble Hangul).
 - **Progression**:
-  - Pairs: +3 XP. Blockwriting: +5 XP.
+  - Pairs / Many-vs-One: +3 XP. Blockwriting: +5 XP.
   - "Learned" = 25+ XP.
-  - Logic lives in `initializeRound()` in `+page.svelte`.
+  - Task selection and progression logic live in `initializeRound()` in `src/lib/util/game.svelte.js`.
 - **Hangul**: Use `src/lib/util/korean.svelte.js` for block manipulation (uses `es-hangul`).
 
 ## Styling (Mobile First)

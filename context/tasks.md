@@ -1,9 +1,9 @@
 # Project Tasks
 
 ## Refactoring & Architecture
-- [ ] **Refactor Pairs Mode**: Extract `PairsMode` logic from `game.svelte.js` into `src/lib/util/modes/pairs-mode.svelte.js`.
-- [ ] **Refactor Many Vs One Mode**: Extract `ManyVsOneMode` logic from `game.svelte.js` into `src/lib/util/modes/many-vs-one-mode.svelte.js`.
-- [ ] **Standardize Mode Interface**: Ensure all mode classes follow a similar interface (`setup()`, `handleInput()`, etc.) for easier orchestration in `Game`.
+- [ ] **Refactor Pairs Task Type**: Extract `PairsTask` logic from `game.svelte.js` into `src/lib/util/tasks/pairs-task.svelte.js`.
+- [ ] **Refactor Many Vs One Task Type**: Extract `ManyVsOneTask` logic from `game.svelte.js` into `src/lib/util/tasks/many-vs-one-task.svelte.js`.
+- [ ] **Standardize Task Type Interface**: Ensure all task type classes follow a similar interface (`setup()`, `handleInput()`, etc.) for easier orchestration in `Game`.
 
 ## Features & UX
 - [ ] **Visual Feedback**:
@@ -18,11 +18,11 @@
 - [ ] **Menu pop-up element**
     - Add Header that houses the progress element but also a settings pop-up / burger menu. Within there include information on word progress and options such as disabling sound.
 - [ ] **Word explanation**
-    - Add an explanation for the background of the word + tips to better memorise it. This may be shown after the word has been shown in Mode B) (matching pairs one vs many).
+    - Add an explanation for the background of the word + tips to better memorise it. This may be shown after the word has been shown in Task Type B) (matching pairs one vs many).
 
 ## Technical Debt & Infrastructure
 - [ ] **Persistence**: Migrate from `localStorage` to `IndexedDB` for more robust data storage (as mentioned in `AGENTS.md`).
-- [ ] **Testing**: Add unit tests for `Game`, `BlockMode`, and other logic classes using Vitest.
+- [ ] **Testing**: Add unit tests for `Game`, `BlockTask`, and other logic classes using Vitest.
 - [ ] **Accessibility**: Ensure all buttons and interactive elements have proper ARIA labels and keyboard navigation support.
 
 ## Content

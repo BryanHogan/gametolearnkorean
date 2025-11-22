@@ -5,14 +5,14 @@
 </script>
 
 <div class="block-container flow margin-inline-auto">
-    <h2 class="text-align-center">{game.blockMode.englishBlockWord}</h2>
-    <p class="text-align-center">{game.blockMode.inputHint}</p>
-    <p class="text-align-center">{game.blockMode.blockInput || "---"}</p>
+    <h2 class="text-align-center">{game.blockTask.englishBlockWord}</h2>
+    <p class="text-align-center">{game.blockTask.inputHint}</p>
+    <p class="text-align-center">{game.blockTask.blockInput || "---"}</p>
     <div class="korean-blocks-container">
-        {#each game.blockMode.koreanBlockInputs as block}
+        {#each game.blockTask.koreanBlockInputs as block}
             <Button
                 type="block-neutral"
-                onclick={() => game.blockMode.handleInput(block)}
+                onclick={() => game.blockTask.handleInput(block)}
             >
                 {block}
             </Button>

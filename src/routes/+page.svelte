@@ -1,9 +1,9 @@
 <script>
     import { Game } from "$lib/util/game.svelte.js";
     import StartScreen from "$lib/components/StartScreen.svelte";
-    import PairsMode from "$lib/components/modes/PairsMode.svelte";
-    import BlockWritingMode from "$lib/components/modes/BlockWritingMode.svelte";
-    import ManyVsOneMode from "$lib/components/modes/ManyVsOneMode.svelte";
+    import PairsTask from "$lib/components/tasks/PairsTask.svelte";
+    import BlockWritingTask from "$lib/components/tasks/BlockWritingTask.svelte";
+    import ManyVsOneTask from "$lib/components/tasks/ManyVsOneTask.svelte";
 
     // Initialize the game state
     const game = new Game();
@@ -15,16 +15,16 @@
             Level: {game.level}
         </p>
         
-        {#if game.levelType === "pairs"}
-            <PairsMode {game} />
+        {#if game.taskType === "pairs"}
+            <PairsTask {game} />
         {/if}
 
-        {#if game.levelType === "blockwriting"}
-            <BlockWritingMode {game} />
+        {#if game.taskType === "blockwriting"}
+            <BlockWritingTask {game} />
         {/if}
 
-        {#if game.levelType === "manyvsone"}
-            <ManyVsOneMode {game} />
+        {#if game.taskType === "manyvsone"}
+            <ManyVsOneTask {game} />
         {/if}
     {:else}
         <StartScreen {game} />
