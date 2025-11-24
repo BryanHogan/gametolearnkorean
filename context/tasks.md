@@ -21,10 +21,13 @@
     - Add an explanation for the background of the word + tips to better memorise it. This may be shown after the word has been shown in Task Type B) (matching pairs one vs many).
 
 ## Technical Debt & Infrastructure
-- [ ] **Persistence**: Migrate from `localStorage` to `IndexedDB` for more robust data storage (as mentioned in `AGENTS.md`).
 - [ ] **Testing**: Add unit tests for `Game`, `BlockTask`, and other logic classes using Vitest.
 - [ ] **Accessibility**: Ensure all buttons and interactive elements have proper ARIA labels and keyboard navigation support.
 
 ## Content
 - [ ] **Expand Vocabulary**: Add more words to `src/lib/data/words.json`.
 - [ ] **Audio**: Add text-to-speech or recorded audio for Korean words.
+
+## More
+- [ ] Use progress score. Show current progress in a progress bar. Show animation using "+" when adding to it, e..g. got a pair right and increased progress score. Show animation using "-" when subtracting from it, e.g. made a mistake. Have some bias to use task type for what fits to current average score, maybe have 40% chance to use task type just based on current average progress score of words.
+- [ ] Add a view to see word experience, experience is added to a word when a game has been successfully completed using that word.

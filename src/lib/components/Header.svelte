@@ -3,8 +3,8 @@
     let isInfoOpen = $state(false);
     let isSettingsOpen = $state(false);
     let headerEl;
-    let infoModalEl = $state(false);
-    let settingsModalEl = $state(false);
+    let infoModalEl;
+    let settingsModalEl;
 
     const toggleMenu = (event) => {
         event.stopPropagation();
@@ -44,7 +44,7 @@
     };
 </script>
 
-<svelte:window onclick={handleWindowClick} onkeydown={handleEscape} />
+<svelte:window on:click={handleWindowClick} on:keydown={handleEscape} />
 
 <div class="backdrop-area">
     <div class="header-container" bind:this={headerEl}>
@@ -55,7 +55,7 @@
                 aria-controls="primary-navigation"
                 aria-expanded={isMenuOpen}
                 class="menu-toggle-button"
-                onclick={toggleMenu}
+                on:click={toggleMenu}
                 type="button"
             >
                 <span class="visually-hidden">{isMenuOpen ? "Close menu" : "Open menu"}</span>
@@ -80,12 +80,12 @@
             <nav class="primary-navigation" id="primary-navigation">
                 <ul role="list">
                     <li>
-                        <button type="button" onclick={openInfo}>
+                        <button type="button" on:click={openInfo}>
                             Info
                         </button>
                     </li>
                     <li>
-                        <button type="button" onclick={openSettings}>
+                        <button type="button" on:click={openSettings}>
                             Settings
                         </button>
                     </li>
@@ -106,7 +106,7 @@
         >
             <header class="modal-header">
                 <h2>Info</h2>
-                <button type="button" class="close" onclick={closeAll}>X</button>
+                <button type="button" class="close" on:click={closeAll}>X</button>
             </header>
             <p>
                 Practice Korean vocabulary with quick, mobile-friendly rounds.
@@ -126,7 +126,7 @@
         >
             <header class="modal-header">
                 <h2>Settings</h2>
-                <button type="button" class="close" onclick={closeAll}>X</button>
+                <button type="button" class="close" on:click={closeAll}>X</button>
             </header>
             <p>
                 Settings are coming soon.

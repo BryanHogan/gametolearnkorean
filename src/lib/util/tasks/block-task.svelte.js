@@ -1,5 +1,4 @@
 import { getSimilarBlock, getRandomKoreanBlock } from "$lib/util/korean.svelte";
-import { updateExperience } from "$lib/util/store.svelte.js";
 
 export class BlockTask {
     game = null;
@@ -11,12 +10,14 @@ export class BlockTask {
     blockInput = $state("");
     inputHint = $state("");
     failedTries = $state(0);
+    currentWord = null;
 
     constructor(game) {
         this.game = game;
     }
 
     setup(word) {
+        this.currentWord = word;
         this.englishBlockWord = word.english;
         this.koreanBlockWord = word.korean;
         this.koreanBlocks = word.korean.split("");
@@ -46,9 +47,16 @@ export class BlockTask {
         
         if (this.blockInput.length === this.koreanBlockWord.length) {
             if (this.blockInput === this.koreanBlockWord) {
-                updateExperience(this.koreanBlockWord, this.englishBlockWord, 5);
+                // Correct answer
+                const isFirstTry = this.failedTries === 0;
+                this.game.updateWordProgress(this.currentWord, isFirstTry);
                 this.game.levelCompleted();
             } else {
+                // Wrong answer
+                if (this.failedTries === 0) {
+                    // First failure - penalize
+                    this.game.penalizeWord(this.currentWord);
+                }
                 this.failedTries += 1;
                 if (this.failedTries >= 3) {
                     this.inputHint = "Hint: " + this.koreanBlockWord.slice(0, Math.max(0, Math.min(this.failedTries - 2, this.koreanBlockWord.length)));
