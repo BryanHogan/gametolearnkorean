@@ -29,7 +29,3 @@
 - **Commands**: `pnpm dev`, `pnpm build`, `pnpm check`.
 - **Android**: `pnpm android-dev` runs dev server + Capacitor sync.
 - **Capacitor**: `build/` is the web root. Native shell is in `android/`.
-
-## Roadmap & Constraints
-- **Persistence**: Future goal is IndexedDB. For now, keep `localStorage` logic isolated in `store.svelte.js`.
-- **Content**: Tone is supportive and simple.

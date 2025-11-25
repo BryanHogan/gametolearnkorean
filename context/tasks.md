@@ -18,7 +18,7 @@
 - [ ] **Menu pop-up element**
     - Add Header that houses the progress element but also a settings pop-up / burger menu. Within there include information on word progress and options such as disabling sound.
 - [ ] **Word explanation**
-    - Add an explanation for the background of the word + tips to better memorise it. This may be shown after the word has been shown in Task Type B) (matching pairs one vs many).
+    - Add an explanation for the background of the word + tips to better memorise it. Also include example sentences. This may be shown after the word has been shown in Task Type B) (matching pairs one vs many).
 
 ## Technical Debt & Infrastructure
 - [ ] **Testing**: Add unit tests for `Game`, `BlockTask`, and other logic classes using Vitest.
@@ -32,3 +32,8 @@
 - [ ] Use progress score. Show current progress in a progress bar. Show animation using "+" when adding to it, e..g. got a pair right and increased progress score. Show animation using "-" when subtracting from it, e.g. made a mistake. Have some bias to use task type for what fits to current average score, maybe have 40% chance to use task type just based on current average progress score of words.
 - [ ] Add a view to see word experience, experience is added to a word when a game has been successfully completed using that word.
 - [ ] Different type of game, have sentences using words that were learned. TOPIK style? Audio?
+- [ ] Add flame icon to bar (or somewhere?) when streak is ongoing, so when user did 10 correct answers in a row. Make the flame burn out on wrong answer, then make it slowly grow back in size.
+- [ ] Add end of session screen with information (time, amount, rounds, mistakes, etc.). Make it social media share-able.
+- [ ] (Option) use words with lower global experience.
+- [ ] (Option) Give some way of selection to let users choose words / some way to select words user is low in confidence on answering.
+- [ ] After wrong answer provide button at top that would explain both words / the right answer.
