@@ -46,10 +46,10 @@ export class Game {
     manyVsOnePromptDirection = $state("english-to-korean");
 
     // Options
-    wordPoolLimit = $state("unlimited");
+    wordPoolLimit = $state("50");
     includeLevel1Cards = $state(true);
-    includeLevel2Cards = $state(false);
-    includeLevel3Cards = $state(false);
+    includeLevel2Cards = $state(true);
+    includeLevel3Cards = $state(true);
 
     constructor() {
         // Initialize if needed
@@ -165,7 +165,6 @@ export class Game {
                     }
                     return { task, weight };
                 });
-            
             if (weightedTasks.length > 0) {
                 // Weighted random selection
                 const totalWeight = weightedTasks.reduce((sum, t) => sum + t.weight, 0);

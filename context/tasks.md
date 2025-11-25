@@ -31,3 +31,4 @@
 ## More
 - [ ] Use progress score. Show current progress in a progress bar. Show animation using "+" when adding to it, e..g. got a pair right and increased progress score. Show animation using "-" when subtracting from it, e.g. made a mistake. Have some bias to use task type for what fits to current average score, maybe have 40% chance to use task type just based on current average progress score of words.
 - [ ] Add a view to see word experience, experience is added to a word when a game has been successfully completed using that word.
+- [ ] Different type of game, have sentences using words that were learned. TOPIK style? Audio?
