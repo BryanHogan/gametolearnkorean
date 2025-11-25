@@ -125,18 +125,72 @@ export class Game {
         return newArray;
     }
 
-    selectTaskType() {
-        // Cycle through task types but skip tasks that have no words at that progress level
-        // This ensures variety while still being efficient
-        
+    selectTaskType() {        
         const taskOrder = ["pairs", "manyvsone", "blockwriting", "freeformwriting"];
         const currentIndex = taskOrder.indexOf(this.taskType);
+        const minWordsForTask = 3;
+        const randomSelectionChance = 0.25;
+        const pairsWeightReduction = 0.5;
         
-        // Try each task type in order, starting from the next one
+        // A task is allowed if:
+        // 1. It has >= minWordsForTask words at its progress level, OR
+        // 2. All remaining incomplete words are at that progress level or higher (no lower-level words to work on first)
+        const isTaskAllowed = (taskName) => {
+            const progressLevel = TASK_PROGRESS_MAP[taskName];
+            const wordsAtLevel = this.getWordsAtProgress(progressLevel);
+            const wordsBelowLevel = this.wordPool.filter(w => w.sessionProgress < progressLevel && w.sessionProgress < MAX_PROGRESS);
+            
+            // Always allow "pairs" (progress 0) - it's the starting point
+            if (taskName === "pairs") return true;
+            
+            // Allow if we have enough words at this level, OR no incomplete words remain below this level
+            return wordsAtLevel.length >= minWordsForTask || 
+                   (wordsAtLevel.length > 0 && wordsBelowLevel.length === 0);
+        };
+        
+        // 25% chance to select a random task (weighted by word count)
+        if (Math.random() < randomSelectionChance) {
+            // Collect allowed tasks with words at their progress level
+            const weightedTasks = taskOrder
+                .filter(task => {
+                    const progressLevel = TASK_PROGRESS_MAP[task];
+                    return isTaskAllowed(task) && this.getWordsAtProgress(progressLevel).length > 0;
+                })
+                .map(task => {
+                    const progressLevel = TASK_PROGRESS_MAP[task];
+                    let weight = this.getWordsAtProgress(progressLevel).length;
+                    // Reduce weight for "pairs" to favor more advanced tasks
+                    if (task === "pairs") {
+                        weight *= pairsWeightReduction;
+                    }
+                    return { task, weight };
+                });
+            
+            if (weightedTasks.length > 0) {
+                // Weighted random selection
+                const totalWeight = weightedTasks.reduce((sum, t) => sum + t.weight, 0);
+                let random = Math.random() * totalWeight;
+                
+                for (const { task, weight } of weightedTasks) {
+                    random -= weight;
+                    if (random <= 0) {
+                        this.taskType = task;
+                        return;
+                    }
+                }
+            }
+        }
+        
+        // Normal cycling: Try each task type in order, starting from the next one
         for (let i = 1; i <= taskOrder.length; i++) {
             const nextIndex = (currentIndex + i) % taskOrder.length;
             const nextTask = taskOrder[nextIndex];
             const progressLevel = TASK_PROGRESS_MAP[nextTask];
+            
+            // Skip task if we don't have enough words at its progress level
+            if (!isTaskAllowed(nextTask)) {
+                continue;
+            }
             
             // Check if there are words at this progress level
             if (this.getWordsAtProgress(progressLevel).length > 0) {
@@ -154,17 +208,24 @@ export class Game {
                 count: this.getWordsAtProgress(level).length
             }));
             
-            const maxCount = Math.max(...progressCounts.map(p => p.count));
-            const levelsWithMax = progressCounts.filter(p => p.count === maxCount && p.count > 0);
+            const progressToTask = {
+                0: "pairs",
+                1: "manyvsone", 
+                2: "blockwriting",
+                3: "freeformwriting"
+            };
             
-            if (levelsWithMax.length > 0) {
+            // Filter out levels where the task isn't allowed
+            const validCounts = progressCounts.filter(p => {
+                const taskName = progressToTask[p.level];
+                return isTaskAllowed(taskName) && p.count > 0;
+            });
+            
+            if (validCounts.length > 0) {
+                const maxCount = Math.max(...validCounts.map(p => p.count));
+                const levelsWithMax = validCounts.filter(p => p.count === maxCount);
+                
                 const selectedLevel = levelsWithMax[Math.floor(Math.random() * levelsWithMax.length)].level;
-                const progressToTask = {
-                    0: "pairs",
-                    1: "manyvsone", 
-                    2: "blockwriting",
-                    3: "freeformwriting"
-                };
                 this.taskType = progressToTask[selectedLevel];
                 return;
             }
@@ -246,6 +307,7 @@ export class Game {
 
     setupPairsRound() {
         // Get words at progress 0 (primary) and mix in some from other levels
+        // does this mix in any word or only words below max progress?
         const targetProgress = TASK_PROGRESS_MAP["pairs"]; // 0
         let targetWords = this.getWordsAtProgress(targetProgress);
         let otherWords = this.wordPool.filter(w => w.sessionProgress !== targetProgress && w.sessionProgress < MAX_PROGRESS);
