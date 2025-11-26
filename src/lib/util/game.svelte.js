@@ -1,6 +1,8 @@
 import { wordData, updateExperience } from "$lib/util/store.svelte.js";
 import { BlockTask } from "$lib/util/tasks/block-task.svelte.js";
 import { FreeFormTask } from "$lib/util/tasks/freeform-task.svelte.js";
+import { ManyVsOneTask } from "$lib/util/tasks/many-vs-one-task.svelte.js";
+import { PairsTask } from "$lib/util/tasks/pairs-task.svelte.js";
 
 // Maps task types to the progress level they correspond to
 const TASK_PROGRESS_MAP = {
@@ -24,26 +26,16 @@ export class Game {
     wordPool = $state([]); // Words with sessionProgress attached
     
     // Round State
-    chosenPairs = $state([]);
-    englishCards = $state([]);
-    koreanCards = $state([]);
-    selectedCards = $state([]);
     failedTries = $state(0);
-    
-    // Track which words failed on first try this round (per-word tracking)
-    failedFirstTry = $state(new Set());
     
     // Track words that recently advanced (to avoid same word appearing in consecutive tasks)
     recentlyAdvanced = $state(new Set());
     
     // Task Types
+    pairsTask = new PairsTask(this);
+    manyVsOneTask = new ManyVsOneTask(this);
     blockTask = new BlockTask(this);
     freeFormTask = new FreeFormTask(this);
-
-    // Many Vs One State
-    manyVsOneTarget = $state(null);
-    manyVsOneOptions = $state([]);
-    manyVsOnePromptDirection = $state("english-to-korean");
 
     // Options
     wordPoolLimit = $state("50");
@@ -286,7 +278,6 @@ export class Game {
 
     levelReset() {
         this.failedTries = 0;
-        this.selectedCards = [];
     }
 
     initializeRound() {
@@ -306,7 +297,6 @@ export class Game {
 
     setupPairsRound() {
         // Get words at progress 0 (primary) and mix in some from other levels
-        // does this mix in any word or only words below max progress?
         const targetProgress = TASK_PROGRESS_MAP["pairs"]; // 0
         let targetWords = this.getWordsAtProgress(targetProgress);
         let otherWords = this.wordPool.filter(w => w.sessionProgress !== targetProgress && w.sessionProgress < MAX_PROGRESS);
@@ -320,19 +310,13 @@ export class Game {
             targetWords = [...targetWords, ...this.shuffledWords(otherWords)];
         }
         
-        this.chosenPairs = this.shuffledWords(targetWords).slice(0, this.pairAmount);
+        const selectedWords = this.shuffledWords(targetWords).slice(0, this.pairAmount);
         
-        // Reset failed tracking for this round
-        this.failedFirstTry = new Set();
+        // Setup the pairs task with selected words
+        this.pairsTask.setup(selectedWords);
+        
         // Clear recently advanced after using it for selection
         this.recentlyAdvanced = new Set();
-
-        this.englishCards = this.shuffledWords(
-            this.chosenPairs.map((card) => ({ type: "english", ...card, selected: false, failedOnce: false }))
-        );
-        this.koreanCards = this.shuffledWords(
-            this.chosenPairs.map((card) => ({ type: "korean", ...card, selected: false, failedOnce: false }))
-        );
     }
 
     setupBlockWritingRound() {
@@ -370,30 +354,20 @@ export class Game {
             targetWords = this.wordPool;
         }
         
-        // Clear recently advanced after selection
-        this.recentlyAdvanced = new Set();
-        
         // Pick 1 target from words at the target progress level
         const shuffled = this.shuffledWords(targetWords);
-        this.manyVsOneTarget = shuffled[0];
-        this.manyVsOneTarget.failedOnce = false; // Track first try
+        const target = shuffled[0];
         
-        // Pick 3 distractors from the broader pool
-        let options = [this.manyVsOneTarget];
-        let potentialDistractors = this.shuffledWords(
-            this.wordPool.filter(w => w.english !== this.manyVsOneTarget.english)
-        );
+        // Pick up to 3 distractors from the broader pool
+        const potentialDistractors = this.shuffledWords(
+            this.wordPool.filter(w => w.english !== target.english)
+        ).slice(0, 3);
         
-        for (let i = 0; i < 3; i++) {
-            if (potentialDistractors[i]) {
-                options.push(potentialDistractors[i]);
-            }
-        }
+        // Setup the many-vs-one task with target and distractors
+        this.manyVsOneTask.setup(target, potentialDistractors);
         
-        this.manyVsOneOptions = this.shuffledWords(options);
-        
-        // Randomize direction
-        this.manyVsOnePromptDirection = Math.random() > 0.5 ? "english-to-korean" : "korean-to-english";
+        // Clear recently advanced after selection
+        this.recentlyAdvanced = new Set();
     }
 
     setupFreeFormWritingRound() {
@@ -414,68 +388,6 @@ export class Game {
         
         // Clear recently advanced after selection
         this.recentlyAdvanced = new Set();
-    }
-
-    // --- Interaction Logic ---
-
-    handleCardPick(card) {
-        card.selected = true;
-        this.selectedCards.push(card);
-
-        if (this.selectedCards.length >= 2) {
-            const card1 = this.selectedCards[0];
-            const card2 = this.selectedCards[1];
-            const wordKey = `${card1.korean}::${card1.english}`;
-
-            if (card1.english === card2.english && card1.type !== card2.type) {
-                // Match found
-                const isFirstTry = !this.failedFirstTry.has(wordKey);
-                
-                // Update progress based on first try success
-                this.updateWordProgress(card1, isFirstTry);
-                
-                // Remove cards
-                this.englishCards = this.englishCards.filter(c => c.english !== card1.english);
-                this.koreanCards = this.koreanCards.filter(c => c.korean !== card1.korean);
-
-                if (this.englishCards.length === 0 && this.koreanCards.length === 0) {
-                    this.levelCompleted();
-                }
-            } else {
-                // No match - mark both words as failed first try
-                const key1 = `${card1.korean}::${card1.english}`;
-                const key2 = `${card2.korean}::${card2.english}`;
-                
-                if (!this.failedFirstTry.has(key1)) {
-                    this.failedFirstTry.add(key1);
-                    this.penalizeWord(card1);
-                }
-                if (!this.failedFirstTry.has(key2)) {
-                    this.failedFirstTry.add(key2);
-                    this.penalizeWord(card2);
-                }
-            }
-            
-            // Reset selection
-            this.selectedCards.forEach(c => c.selected = false);
-            this.selectedCards = [];
-        }
-    }
-
-    handleManyVsOneChoice(option) {
-        const isCorrect = option.english === this.manyVsOneTarget.english;
-        
-        if (isCorrect) {
-            const isFirstTry = !this.manyVsOneTarget.failedOnce;
-            this.updateWordProgress(this.manyVsOneTarget, isFirstTry);
-            this.levelCompleted();
-        } else {
-            if (!this.manyVsOneTarget.failedOnce) {
-                this.manyVsOneTarget.failedOnce = true;
-                this.penalizeWord(this.manyVsOneTarget);
-            }
-            this.failedTries += 1;
-        }
     }
 
     calculateCompletionRate(difficulty) {

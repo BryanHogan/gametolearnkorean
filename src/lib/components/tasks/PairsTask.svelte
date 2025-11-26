@@ -6,11 +6,11 @@
 
 <div class="card-grid-container margin-inline-auto">
     <ul class="card-grid" role="list">
-        {#each game.englishCards as card}
+        {#each game.pairsTask.englishCards as card}
             <li>
                 <Button
                     type={"grow card-neutral " + (card.selected ? "selected" : "")}
-                    onclick={() => game.handleCardPick(card)}
+                    onclick={() => game.pairsTask.handleInput(card)}
                 >
                     <p>{card.english}</p>
                 </Button>
@@ -18,11 +18,11 @@
         {/each}
     </ul>
     <ul class="card-grid" role="list">
-        {#each game.koreanCards as card}
+        {#each game.pairsTask.koreanCards as card}
             <li>
                 <Button
                     type={"grow card-neutral " + (card.selected ? "selected" : "")}
-                    onclick={() => game.handleCardPick(card)}
+                    onclick={() => game.pairsTask.handleInput(card)}
                 >
                     <p>{card.korean}</p>
                 </Button>

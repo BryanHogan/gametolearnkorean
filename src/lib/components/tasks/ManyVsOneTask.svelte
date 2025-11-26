@@ -4,9 +4,9 @@
     let { game } = $props();
     
     let prompt = $derived(
-        game.manyVsOnePromptDirection === "english-to-korean"
-            ? game.manyVsOneTarget.english
-            : game.manyVsOneTarget.korean
+        game.manyVsOneTask.promptDirection === "english-to-korean"
+            ? game.manyVsOneTask.target.english
+            : game.manyVsOneTask.target.korean
     );
 </script>
 
@@ -14,12 +14,12 @@
     <h2 class="text-align-center margin-bottom-m">{prompt}</h2>
     
     <div class="options-grid">
-        {#each game.manyVsOneOptions as option}
+        {#each game.manyVsOneTask.options as option}
             <Button 
                 type="grow card-neutral" 
-                onclick={() => game.handleManyVsOneChoice(option)}
+                onclick={() => game.manyVsOneTask.handleInput(option)}
             >
-                {#if game.manyVsOnePromptDirection === "english-to-korean"}
+                {#if game.manyVsOneTask.promptDirection === "english-to-korean"}
                     {option.korean}
                 {:else}
                     {option.english}
