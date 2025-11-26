@@ -48,7 +48,8 @@ export class PairsTask {
                 if (this.englishCards.length === 0 && this.koreanCards.length === 0) {
                     this.game.levelCompleted();
                 }
-            } else {
+            } else if (card1.type !== card2.type) {
+                // No match (but different card types, so it's a real attempt)
                 this.game.totalMistakes += 1;
                 
                 // Mark both words as failed first try
@@ -64,6 +65,7 @@ export class PairsTask {
                     this.game.penalizeWord(card2);
                 }
             }
+            // If same card type selected (e.g., two English cards), just reset selection without penalty
 
             // Reset selection
             this.selectedCards.forEach(c => c.selected = false);
