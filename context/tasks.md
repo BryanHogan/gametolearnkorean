@@ -1,39 +1,56 @@
 # Project Tasks
 
-## Refactoring & Architecture
-- [ ] **Refactor Pairs Task Type**: Extract `PairsTask` logic from `game.svelte.js` into `src/lib/util/tasks/pairs-task.svelte.js`.
-- [ ] **Refactor Many Vs One Task Type**: Extract `ManyVsOneTask` logic from `game.svelte.js` into `src/lib/util/tasks/many-vs-one-task.svelte.js`.
-- [ ] **Standardize Task Type Interface**: Ensure all task type classes follow a similar interface (`setup()`, `handleInput()`, etc.) for easier orchestration in `Game`.
+## High Priority
 
-## Features & UX
-- [ ] **Visual Feedback**:
-    - Add shake animation for incorrect answers in "Many vs One" and "Block Writing".
-    - Add confetti or particle effect for level completion. -> Progress at top should get should a small plus that's animated in a nice way.
-- [ ] **Settings Menu**:
-    - Toggle sound effects (if added).
-    - Reset progress option.
-    - Toggle specific difficulty levels manually.
-- [ ] **Progress Visualization**:
-    - Show a progress bar for overall progress.
-- [ ] **Menu pop-up element**
-    - Add Header that houses the progress element but also a settings pop-up / burger menu. Within there include information on word progress and options such as disabling sound.
-- [ ] **Word explanation**
-    - Add an explanation for the background of the word + tips to better memorise it. Also include example sentences. This may be shown after the word has been shown in Task Type B) (matching pairs one vs many).
+### Architecture
+- [ ] Extract `PairsTask` logic into `src/lib/util/tasks/pairs-task.svelte.js`
+- [ ] Extract `ManyVsOneTask` logic into `src/lib/util/tasks/many-vs-one-task.svelte.js`
+- [ ] Standardize task interface: all tasks use `setup()`, `handleInput()`, etc.
 
-## Technical Debt & Infrastructure
-- [ ] **Testing**: Add unit tests for `Game`, `BlockTask`, and other logic classes using Vitest.
-- [ ] **Accessibility**: Ensure all buttons and interactive elements have proper ARIA labels and keyboard navigation support.
+### Core Features
+- [ ] Play audio when Korean cards are clicked (text-to-speech)
+- [ ] End of session screen with stats (time, rounds, mistakes) + social share
+- [ ] Header with progress bar + settings menu (burger icon)
+- [ ] Word experience view — see XP per word
+
+## Features
+
+### Progress & Streaks
+- [ ] Animated progress bar: show "+" on correct, "-" on mistake
+- [ ] Daily streak tracking
+- [ ] Flame icon for answer streaks (10+ correct in a row) (refills / grows)
+- [ ] GitHub-style daily usage overview
+
+### Feedback & Polish
+- [ ] Shake animation for wrong answers
+- [ ] Confetti/particle effect on level complete
+- [ ] After wrong answer: button to explain both words
+
+### Word Learning
+- [ ] Word explanations: background, tips, example sentences
+- [ ] Option to prioritize words with lower experience
+- [ ] Option to select specific words / low-confidence words
+- [ ] Add words from Naver Dictionary groups
+
+### Settings
+- [ ] Toggle sound effects
+- [ ] Reset progress
+- [ ] Toggle difficulty levels
+- [ ] Toggle task types (pairs, many-vs-one, block writing, etc.)
+
+### New Game Modes
+- [ ] Sentence-based tasks using learned words (TOPIK style)
+- [ ] Audio-only words mode
+- [ ] Time trial / survival modes
+
+## Technical
+
+- [ ] Add unit tests (Vitest) for `Game`, `BlockTask`, task classes
+- [ ] Accessibility: ARIA labels, keyboard navigation
+- [ ] Track session time
+- [ ] Publish to Play Store
 
 ## Content
-- [ ] **Expand Vocabulary**: Add more words to `src/lib/data/words.json`.
-- [ ] **Audio**: Add text-to-speech or recorded audio for Korean words.
 
-## More
-- [ ] Use progress score. Show current progress in a progress bar. Show animation using "+" when adding to it, e..g. got a pair right and increased progress score. Show animation using "-" when subtracting from it, e.g. made a mistake. Have some bias to use task type for what fits to current average score, maybe have 40% chance to use task type just based on current average progress score of words.
-- [ ] Add a view to see word experience, experience is added to a word when a game has been successfully completed using that word.
-- [ ] Different type of game, have sentences using words that were learned. TOPIK style? Audio?
-- [ ] Add flame icon to bar (or somewhere?) when streak is ongoing, so when user did 10 correct answers in a row. Make the flame burn out on wrong answer, then make it slowly grow back in size.
-- [ ] Add end of session screen with information (time, amount, rounds, mistakes, etc.). Make it social media share-able.
-- [ ] (Option) use words with lower global experience.
-- [ ] (Option) Give some way of selection to let users choose words / some way to select words user is low in confidence on answering.
-- [ ] After wrong answer provide button at top that would explain both words / the right answer.
+- [ ] Expand vocabulary in `words.json`
+- [ ] Add recorded audio for Korean words

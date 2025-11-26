@@ -1,31 +1,48 @@
 # Game To Learn Korean — Agent Guide
 
 ## Project Overview
-**Game To Learn Korean** is a gamified flashcard-like app for learning Korean. A way to learn new Korean vocabulary fast and in a more fun way.
+**Game To Learn Korean** is a gamified flashcard-like app for learning Korean vocabulary.
 - **Stack**: SvelteKit 2 (Static), Vite 5, Svelte 5 Runes, Capacitor 6 (Android).
-- **Data**: `src/lib/data/words.json` (static) + `localStorage` (user progress).
+- **Data**: `src/lib/data/words.json` (static) + IndexedDB (user progress).
 - **Design**: Mobile-first, dark mode default.
 
 ## Key Architecture Rules
 1. **Svelte 5 Runes**: Use `$state`, `$derived`, `$props`. Avoid legacy stores.
-2. **Client-Only**: App is pre-rendered (`prerender = true`). Guard `window`/`localStorage` access.
-3. **Persistence**: `wordData` combines static JSON with local experience scores. Never modify `words.json` for runtime state.
-4. **Structure**: Keep `+page.svelte` for orchestration. Move logic to `src/lib/util` and UI to `src/lib/components`.
+2. **Client-Only**: App is pre-rendered. Guard `window`/`indexedDB` access.
+3. **Persistence**: `wordData` merges static JSON with IndexedDB experience. Never modify `words.json` at runtime.
+4. **Structure**: Keep `+page.svelte` for orchestration. Logic in `src/lib/util`, UI in `src/lib/components`.
 
 ## Core Game Logic
-- **Game Types vs Task Types**: Win conditions are defined as game types (e.g., survival, mastery). Task types rotate between **Pairs** (match cards), **Many-vs-One** (multiple choice), and **Blockwriting** (assemble Hangul).
-- **Progression**:
-  - Pairs / Many-vs-One: +3 XP. Blockwriting: +5 XP.
-  - "Learned" = 25+ XP.
-  - Task selection and progression logic live in `initializeRound()` in `src/lib/util/game.svelte.js`.
-- **Hangul**: Use `src/lib/util/korean.svelte.js` for block manipulation (uses `es-hangul`).
 
-## Styling (Mobile First)
-- **Tokens**: Use `var.css` for colors and spacing.
-- **Layout**: Use `util.css` over custom CSS.
-- **Components**: Extend `Button.svelte` and `Card.svelte` instead of raw HTML.
+### Session Progression
+Each word has **session progress** (0–4). Tasks match progress levels:
 
-## Development & Build
-- **Commands**: `pnpm dev`, `pnpm build`, `pnpm check`.
-- **Android**: `pnpm android-dev` runs dev server + Capacitor sync.
-- **Capacitor**: `build/` is the web root. Native shell is in `android/`.
+| Progress | Task Type       | Description                    |
+|----------|-----------------|--------------------------------|
+| 0        | Pairs           | Match Korean ↔ English cards   |
+| 1        | Many-vs-One     | Multiple choice (4 options)    |
+| 2        | Blockwriting    | Assemble Hangul blocks         |
+| 3        | FreeFormWriting | Type Korean word freely        |
+| 4        | Mastered        | Word complete for session      |
+
+- **Correct first try**: Word advances +1 progress
+- **Failure**: Word regresses -1 progress (first failure only)
+- **Session complete**: All words reach 4 → +5 XP each
+
+### Experience
+- `updateExperience(korean, english, amount)` persists to IndexedDB
+- "Learned" word = 25+ XP
+
+## Hangul Utilities (`korean.svelte.js`)
+Uses `es-hangul` for `getSimilarBlock()`, `getRandomKoreanBlock()`, `disassemble()`, `assemble()`.
+
+## Styling
+- **Tokens**: `var.css` for colors (`--color-neutral-*`, `--color-accent-*`), spacing (`--space-*`)
+- **Utilities**: `util.css` classes like `margin-inline-auto`, `margin-top-m`
+- **Components**: Use `Button.svelte` and `Card.svelte` instead of raw HTML
+
+## Commands
+- `pnpm dev` — Start dev server
+- `pnpm build` — Build for production
+- `pnpm check` — Type checking
+- `pnpm android-dev` — Dev + Capacitor sync + Android Studio
