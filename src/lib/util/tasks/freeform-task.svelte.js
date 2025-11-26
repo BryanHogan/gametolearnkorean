@@ -23,7 +23,7 @@ export class FreeFormTask {
         this.showSuccess = false;
     }
 
-    handleSubmit() {
+    handleInput() {
         // Normalize both strings: trim whitespace
         const normalizedInput = this.userInput.trim();
         const normalizedTarget = this.koreanWord.trim();

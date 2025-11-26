@@ -6,7 +6,7 @@
     function handleKeydown(event) {
         if (event.key === "Enter") {
             event.preventDefault();
-            game.freeFormTask.handleSubmit();
+            game.freeFormTask.handleInput();
         }
     }
 </script>
@@ -45,7 +45,7 @@
         </Button>
         <Button 
             type="grow accent-low" 
-            onclick={() => game.freeFormTask.handleSubmit()}
+            onclick={() => game.freeFormTask.handleInput()}
         >
             Submit
         </Button>
