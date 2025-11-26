@@ -29,6 +29,7 @@ export class Game {
     totalCorrect = $state(0);
     totalMistakes = $state(0);
     timeAtGameStart = $state(new Date());
+    timeAtGameEnd = $state(null);
     
     // Round State
     failedTries = $state(0);
@@ -249,11 +250,26 @@ export class Game {
     
     // Called when all words reach max progress
     completeSession() {
+        this.timeAtGameEnd = new Date();
+        
         // Award experience to all words in the pool
         for (const word of this.wordPool) {
             updateExperience(word.korean, word.english, 5);
         }
         this.gameCompleted = true;
+    }
+    
+    // Session duration in seconds
+    get sessionDuration() {
+        if (!this.timeAtGameEnd) return 0;
+        return Math.floor((this.timeAtGameEnd - this.timeAtGameStart) / 1000);
+    }
+    
+    // Formatted duration as M:SS
+    get formattedDuration() {
+        const mins = Math.floor(this.sessionDuration / 60);
+        const secs = this.sessionDuration % 60;
+        return `${mins}:${secs.toString().padStart(2, '0')}`;
     }
     
     // Update a word's session progress
