@@ -262,7 +262,7 @@ export class Game {
     // Session duration in seconds
     get sessionDuration() {
         if (!this.timeAtGameEnd) return 0;
-        return Math.floor((this.timeAtGameEnd - this.timeAtGameStart) / 1000);
+        return Math.floor((this.timeAtGameEnd.getTime() - this.timeAtGameStart.getTime()) / 1000);
     }
     
     // Formatted duration as M:SS
@@ -270,6 +270,22 @@ export class Game {
         const mins = Math.floor(this.sessionDuration / 60);
         const secs = this.sessionDuration % 60;
         return `${mins}:${secs.toString().padStart(2, '0')}`;
+    }
+    
+    // Calculate accuracy percentage
+    get accuracy() {
+        const total = this.totalCorrect + this.totalMistakes;
+        if (total === 0) return 100;
+        return Math.round((this.totalCorrect / total) * 100);
+    }
+    
+    // Calculate score based on words, accuracy, and time
+    get score() {
+        const accuracy = this.totalCorrect + this.totalMistakes > 0 
+            ? this.totalCorrect / (this.totalCorrect + this.totalMistakes) 
+            : 1;
+        const timeBonus = Math.max(0, 300 - this.sessionDuration); // Bonus for finishing under 5 min
+        return Math.round((this.wordPool.length * 100 * accuracy) + timeBonus);
     }
     
     // Update a word's session progress
