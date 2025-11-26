@@ -7,7 +7,6 @@
     import FreeFormWritingTask from "$lib/components/tasks/FreeFormWritingTask.svelte";
     import Button from "$lib/components/Button.svelte";
 
-    // Initialize the game state
     const game = new Game();
     
     function restartGame() {

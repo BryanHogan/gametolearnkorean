@@ -31,7 +31,6 @@ Each word has **session progress** (0–4). Tasks match progress levels:
 
 ### Experience
 - `updateExperience(korean, english, amount)` persists to IndexedDB
-- "Learned" word = 25+ XP
 
 ## Hangul Utilities (`korean.svelte.js`)
 Uses `es-hangul` for `getSimilarBlock()`, `getRandomKoreanBlock()`, `disassemble()`, `assemble()`.
