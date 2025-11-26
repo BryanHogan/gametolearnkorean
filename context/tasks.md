@@ -17,8 +17,8 @@
 
 ### Progress & Streaks
 - [ ] Animated progress bar: show "+" on correct, "-" on mistake
-- [ ] Daily streak tracking
 - [ ] Flame icon for answer streaks (10+ correct in a row) (refills / grows)
+- [ ] Daily streak tracking
 - [ ] GitHub-style daily usage overview
 
 ### Feedback & Polish
