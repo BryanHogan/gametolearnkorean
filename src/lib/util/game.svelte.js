@@ -95,6 +95,8 @@ export class Game {
             selectedWords = filteredWords;
         } else if (this.wordPoolLimit == "50") {
             selectedWords = this.shuffledWords(filteredWords).slice(0, 50);
+        } else if (this.wordPoolLimit == "20") {
+            selectedWords = this.shuffledWords(filteredWords).slice(0, 20);
         } else {
             selectedWords = filteredWords;
         }

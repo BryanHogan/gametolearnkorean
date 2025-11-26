@@ -14,6 +14,7 @@
         <select id="wordpool-select" bind:value={game.wordPoolLimit}>
             <option value="unlimited">Unlimited</option>
             <option value="50">50 words</option>
+            <option value="20">20 words</option>
         </select>
     </div>
     <div class="difficulty-checkbox-container">
