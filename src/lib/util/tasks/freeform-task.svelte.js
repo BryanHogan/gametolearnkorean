@@ -39,6 +39,8 @@ export class FreeFormTask {
             }, 500);
         } else {
             // Wrong answer
+            this.game.totalMistakes += 1;
+            
             if (this.failedTries === 0) {
                 // First failure - penalize
                 this.game.penalizeWord(this.currentWord);

@@ -9,7 +9,7 @@ export class BlockTask {
     koreanBlockInputs = $state([]);
     blockInput = $state("");
     inputHint = $state("");
-    failedTries = $state(0);
+    failedTriesCurrentRound = $state(0);
     currentWord = null;
 
     constructor(game) {
@@ -23,7 +23,7 @@ export class BlockTask {
         this.koreanBlocks = word.korean.split("");
         this.blockInput = "";
         this.inputHint = "";
-        this.failedTries = 0;
+        this.failedTriesCurrentRound = 0;
         this.generateInputs();
     }
 
@@ -48,18 +48,20 @@ export class BlockTask {
         if (this.blockInput.length === this.koreanBlockWord.length) {
             if (this.blockInput === this.koreanBlockWord) {
                 // Correct answer
-                const isFirstTry = this.failedTries === 0;
+                const isFirstTry = this.failedTriesCurrentRound === 0;
                 this.game.updateWordProgress(this.currentWord, isFirstTry);
                 this.game.levelCompleted();
             } else {
                 // Wrong answer
-                if (this.failedTries === 0) {
+                this.game.totalMistakes += 1;
+                
+                if (this.failedTriesCurrentRound === 0) {
                     // First failure - penalize
                     this.game.penalizeWord(this.currentWord);
                 }
-                this.failedTries += 1;
-                if (this.failedTries >= 3) {
-                    this.inputHint = "Hint: " + this.koreanBlockWord.slice(0, Math.max(0, Math.min(this.failedTries - 2, this.koreanBlockWord.length)));
+                this.failedTriesCurrentRound += 1;
+                if (this.failedTriesCurrentRound >= 3) {
+                    this.inputHint = "Hint: " + this.koreanBlockWord.slice(0, Math.max(0, Math.min(this.failedTriesCurrentRound - 2, this.koreanBlockWord.length)));
                 }
                 this.blockInput = "";
             }

@@ -24,6 +24,11 @@ export class Game {
     // Data
     words = wordData;
     wordPool = $state([]); // Words with sessionProgress attached
+
+    // User stats
+    totalCorrect = $state(0);
+    totalMistakes = $state(0);
+    timeAtGameStart = $state(new Date());
     
     // Round State
     failedTries = $state(0);
@@ -80,6 +85,9 @@ export class Game {
         this.gameStart = true;
         this.gameCompleted = false;
         this.level = 1;
+        this.totalCorrect = 0;
+        this.totalMistakes = 0;
+        this.timeAtGameStart = new Date();
         this.levelReset();
         
         let filteredWords = this.words.filter((word) => {
@@ -257,13 +265,17 @@ export class Game {
         
         const taskProgressLevel = TASK_PROGRESS_MAP[this.taskType];
         
-        if (isCorrectFirstTry && wordInPool.sessionProgress === taskProgressLevel) {
-            // Advance progress only if first try AND word is at the matching progress level
-            wordInPool.sessionProgress = Math.min(wordInPool.sessionProgress + 1, MAX_PROGRESS);
+        if (isCorrectFirstTry) {
+            this.totalCorrect += 1;
             
-            // Mark as recently advanced so it won't be immediately reused
-            const wordKey = `${wordInPool.korean}::${wordInPool.english}`;
-            this.recentlyAdvanced.add(wordKey);
+            if (wordInPool.sessionProgress === taskProgressLevel) {
+                // Advance progress only if word is at the matching progress level
+                wordInPool.sessionProgress = Math.min(wordInPool.sessionProgress + 1, MAX_PROGRESS);
+                
+                // Mark as recently advanced so it won't be immediately reused
+                const wordKey = `${wordInPool.korean}::${wordInPool.english}`;
+                this.recentlyAdvanced.add(wordKey);
+            }
         }
     }
     

@@ -38,6 +38,8 @@ export class ManyVsOneTask {
             this.game.updateWordProgress(this.target, isFirstTry);
             this.game.levelCompleted();
         } else {
+            this.game.totalMistakes += 1;
+            
             if (!this.target.failedOnce) {
                 this.target.failedOnce = true;
                 this.game.penalizeWord(this.target);

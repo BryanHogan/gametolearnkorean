@@ -57,7 +57,10 @@ export class PairsTask {
                     this.game.levelCompleted();
                 }
             } else {
-                // No match - mark both words as failed first try
+                // No match - count as mistake
+                this.game.totalMistakes += 1;
+                
+                // Mark both words as failed first try
                 const key1 = `${card1.korean}::${card1.english}`;
                 const key2 = `${card2.korean}::${card2.english}`;
 

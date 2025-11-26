@@ -20,6 +20,7 @@
 - [ ] Flame icon for answer streaks (10+ correct in a row) (refills / grows)
 - [ ] Daily streak tracking
 - [ ] GitHub-style daily usage overview
+- [ ] Change how word experience is calculated
 
 ### Feedback & Polish
 - [ ] Shake animation for wrong answers
