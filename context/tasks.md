@@ -3,9 +3,9 @@
 ## High Priority
 
 ### Architecture
-- [ ] Extract `PairsTask` logic into `src/lib/util/tasks/pairs-task.svelte.js`
-- [ ] Extract `ManyVsOneTask` logic into `src/lib/util/tasks/many-vs-one-task.svelte.js`
-- [ ] Standardize task interface: all tasks use `setup()`, `handleInput()`, etc.
+- [x] Extract `PairsTask` logic into `src/lib/util/tasks/pairs-task.svelte.js`
+- [x] Extract `ManyVsOneTask` logic into `src/lib/util/tasks/many-vs-one-task.svelte.js`
+- [x] Standardize task interface: all tasks use `setup()`, `handleInput()`, etc.
 
 ### Core Features
 - [ ] Play audio when Korean cards are clicked (text-to-speech)
