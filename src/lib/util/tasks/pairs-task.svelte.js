@@ -12,10 +12,6 @@ export class PairsTask {
         this.game = game;
     }
 
-    /**
-     * Initialize the pairs round with pre-selected words.
-     * @param {Array} words - Array of word objects to use for this round
-     */
     setup(words) {
         this.chosenPairs = words;
         this.selectedCards = [];
@@ -29,10 +25,6 @@ export class PairsTask {
         );
     }
 
-    /**
-     * Handle card selection and matching logic.
-     * @param {Object} card - The card object that was clicked
-     */
     handleInput(card) {
         card.selected = true;
         this.selectedCards.push(card);
@@ -57,7 +49,6 @@ export class PairsTask {
                     this.game.levelCompleted();
                 }
             } else {
-                // No match - count as mistake
                 this.game.totalMistakes += 1;
                 
                 // Mark both words as failed first try

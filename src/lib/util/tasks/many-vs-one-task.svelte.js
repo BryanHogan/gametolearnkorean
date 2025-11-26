@@ -9,12 +9,7 @@ export class ManyVsOneTask {
     constructor(game) {
         this.game = game;
     }
-
-    /**
-     * Initialize the many-vs-one round with a target word and distractors.
-     * @param {Object} targetWord - The target word object
-     * @param {Array} distractors - Array of distractor word objects
-     */
+    
     setup(targetWord, distractors) {
         this.target = { ...targetWord, failedOnce: false };
         
@@ -26,10 +21,6 @@ export class ManyVsOneTask {
         this.promptDirection = Math.random() > 0.5 ? "english-to-korean" : "korean-to-english";
     }
 
-    /**
-     * Handle option selection.
-     * @param {Object} option - The selected option object
-     */
     handleInput(option) {
         const isCorrect = option.english === this.target.english;
 
