@@ -9,7 +9,7 @@
 
 ### Core Features
 - [ ] Play audio when Korean cards are clicked (text-to-speech)
-- [ ] End of session screen with stats (time, rounds, mistakes) + social share
+- [x] End of session screen with stats (time, rounds, mistakes)
 - [ ] Header with progress bar + settings menu (burger icon)
 - [ ] Word experience view — see XP per word
 
@@ -48,10 +48,14 @@
 
 - [ ] Add unit tests (Vitest) for `Game`, `BlockTask`, task classes
 - [ ] Accessibility: ARIA labels, keyboard navigation
-- [ ] Track session time
+- [x] Track session time
 - [ ] Publish to Play Store
 
 ## Content
 
 - [ ] Expand vocabulary in `words.json`
 - [ ] Add recorded audio for Korean words
+
+## Marketing & growth
+
+- [ ] Social share for end of game screen
