@@ -1,40 +1,51 @@
 <script>
-    let isMenuOpen = $state(false);
+    import Icons from "$lib/components/icons/index.js";
+    import Modal from "$lib/components/Modal.svelte";
+    
+    let { game = null } = $props();
+    
+    // Modal state
     let isInfoOpen = $state(false);
     let isSettingsOpen = $state(false);
-    let headerEl;
-    let infoModalEl;
-    let settingsModalEl;
+    let isBookOpen = $state(false);
+    let isStreakOpen = $state(false);
+    // Book modal filter state
+    let showOnlyFailed = $state(true);
 
-    const toggleMenu = (event) => {
-        event.stopPropagation();
-        isMenuOpen = !isMenuOpen;
+    const openStreak = () => {
+        isStreakOpen = true;
+        isInfoOpen = false;
+        isSettingsOpen = false;
+        isBookOpen = false;
     };
 
     const openInfo = () => {
         isInfoOpen = true;
+        isStreakOpen = false;
         isSettingsOpen = false;
-        isMenuOpen = false;
+        isBookOpen = false;
     };
 
     const openSettings = () => {
         isSettingsOpen = true;
+        isStreakOpen = false;
         isInfoOpen = false;
-        isMenuOpen = false;
+        isBookOpen = false;
+    };
+    
+    const openBook = () => {
+        isBookOpen = true;
+        isStreakOpen = false;
+        isInfoOpen = false;
+        isSettingsOpen = false;
+        showOnlyFailed = true; // Default to showing only failed words
     };
 
     const closeAll = () => {
-        isMenuOpen = false;
+        isStreakOpen = false;
         isInfoOpen = false;
         isSettingsOpen = false;
-    };
-
-    const handleWindowClick = (event) => {
-        const target = event.target;
-        if (headerEl?.contains(target)) return;
-        if (infoModalEl?.contains(target)) return;
-        if (settingsModalEl?.contains(target)) return;
-        closeAll();
+        isBookOpen = false;
     };
 
     const handleEscape = (event) => {
@@ -42,98 +53,169 @@
             closeAll();
         }
     };
+    
+    // Derived state for progress
+    const isGameActive = $derived(game?.gameStart && !game?.gameCompleted);
+    const totalCount = $derived(game?.wordPool?.length ?? 0);
+    const totalProgressSteps = $derived(
+        game?.wordPool?.reduce((sum, word) => {
+            const progress = Math.min(4, Math.max(0, word.sessionProgress ?? 0));
+            return sum + progress;
+        }, 0) ?? 0
+    );
+    const progressPercent = $derived(
+        totalCount > 0 ? (totalProgressSteps / (totalCount * 4)) * 100 : 0
+    );
+    const hasFailedWords = $derived((game?.recentlyFailedWords?.length ?? 0) > 0);
+    
+    // Filtered words for book modal
+    const displayedWords = $derived.by(() => {
+        if (!game?.wordPool) return [];
+        if (showOnlyFailed && game.recentlyFailedWords?.length > 0) {
+            return game.recentlyFailedWords;
+        }
+        return game.wordPool;
+    });
 </script>
 
-<svelte:window on:click={handleWindowClick} on:keydown={handleEscape} />
+<svelte:window onkeydown={handleEscape} />
 
 <div class="backdrop-area">
-    <div class="header-container" bind:this={headerEl}>
+    <div class="header-container">
         <header>
-            <p class="brand">Game To Learn Korean</p>
+            <!-- Left side: Progress bar (only during active game) -->
+            <div class="header-left">
+                {#if isGameActive}
+                    <div class="progress-container">
+                        <div class="progress-bar-track">
+                            <div 
+                                class="progress-bar-fill" 
+                                style="width: {progressPercent}%"
+                            ></div>
+                        </div>
+                    </div>
+                {:else}
+                    <p class="brand">Game To Learn Korean</p>
+                {/if}
+            </div>
 
-            <button
-                aria-controls="primary-navigation"
-                aria-expanded={isMenuOpen}
-                class="menu-toggle-button"
-                on:click={toggleMenu}
-                type="button"
-            >
-                <span class="visually-hidden">{isMenuOpen ? "Close menu" : "Open menu"}</span>
-                <svg class="hamburger-icon" viewBox="0 0 24 24" aria-hidden="true">
-                    <path
-                        d="M4 6.5h16M4 12h16M4 17.5h16"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                    />
-                </svg>
-                <svg class="close-icon" viewBox="0 0 24 24" aria-hidden="true">
-                    <path
-                        d="M5.5 5.5 18.5 18.5M18.5 5.5 5.5 18.5"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                    />
-                </svg>
-            </button>
-
-            <nav class="primary-navigation" id="primary-navigation">
-                <ul role="list">
-                    <li>
-                        <button type="button" on:click={openInfo}>
-                            Info
-                        </button>
-                    </li>
-                    <li>
-                        <button type="button" on:click={openSettings}>
-                            Settings
-                        </button>
-                    </li>
-                </ul>
-            </nav>
+            <!-- Right side: Icon buttons -->
+            <div class="icon-group">
+                <!-- Streak flame -->
+                <button 
+                    type="button" 
+                    class="icon-button"
+                    onclick={openStreak}
+                    aria-label="View streak"
+                    title="View streak"
+                >
+                    <Icons.flame class="icon" />
+                </button>
+                
+                <!-- Book -->
+                <button 
+                    type="button" 
+                    class="icon-button"
+                    onclick={openBook}
+                    aria-label="View vocabulary"
+                    title="View vocabulary"
+                >
+                    <Icons.book class="icon" />
+                </button>
+                
+                <!-- Info -->
+                <button 
+                    type="button" 
+                    class="icon-button"
+                    onclick={openInfo}
+                    aria-label="Info"
+                    title="Info"
+                >
+                    <Icons.info class="icon" />
+                </button>
+                
+                <!-- Settings -->
+                <button 
+                    type="button" 
+                    class="icon-button"
+                    onclick={openSettings}
+                    aria-label="Settings"
+                    title="Settings"
+                >
+                    <Icons.settings class="icon" />
+                </button>
+            </div>
         </header>
     </div>
 </div>
 
-{#if isInfoOpen}
-    <div class="modal-backdrop">
-        <section
-            class="modal"
-            role="dialog"
-            aria-modal="true"
-            aria-label="Info"
-            bind:this={infoModalEl}
-        >
-            <header class="modal-header">
-                <h2>Info</h2>
-                <button type="button" class="close" on:click={closeAll}>X</button>
-            </header>
-            <p>
-                Practice Korean vocabulary with quick, mobile-friendly rounds.
-            </p>
-        </section>
-    </div>
-{/if}
+<!-- Streak Modal -->
+<Modal isOpen={isStreakOpen} title="Streak" onClose={closeAll}>
+    {#snippet children()}
+        <div class="streak-display">
+            <Icons.flame class="streak-icon" />
+            <span class="streak-count">{game?.currentStreak ?? 0}</span>
+        </div>
+        <p class="modal-text">
+            {#if (game?.currentStreak ?? 0) === 0}
+                Answer correctly to start a streak!
+            {:else}
+                You're on a roll! Keep going!
+            {/if}
+        </p>
+    {/snippet}
+</Modal>
 
-{#if isSettingsOpen}
-    <div class="modal-backdrop">
-        <section
-            class="modal"
-            role="dialog"
-            aria-modal="true"
-            aria-label="Settings"
-            bind:this={settingsModalEl}
-        >
-            <header class="modal-header">
-                <h2>Settings</h2>
-                <button type="button" class="close" on:click={closeAll}>X</button>
-            </header>
-            <p>
-                Settings are coming soon.
-            </p>
-        </section>
-    </div>
-{/if}
+<!-- Info Modal -->
+<Modal isOpen={isInfoOpen} title="Info" onClose={closeAll}>
+    {#snippet children()}
+        <p class="modal-text">
+            Practice Korean vocabulary with quick, mobile-friendly rounds.
+        </p>
+    {/snippet}
+</Modal>
+
+<!-- Settings Modal -->
+<Modal isOpen={isSettingsOpen} title="Settings" onClose={closeAll}>
+    {#snippet children()}
+        <p class="modal-text">
+            Settings are coming soon.
+        </p>
+    {/snippet}
+</Modal>
+
+<!-- Vocabulary Modal -->
+<Modal isOpen={isBookOpen} title="Vocabulary" onClose={closeAll} size="large">
+    {#snippet children()}
+        <!-- Filter toggle -->
+        <div class="filter-toggle">
+            <label class="toggle-label">
+                <input 
+                    type="checkbox" 
+                    bind:checked={showOnlyFailed}
+                />
+                <span>Show only failed words</span>
+            </label>
+        </div>
+        
+        <!-- Word list -->
+        <div class="word-list">
+            {#each displayedWords as word (word.korean + word.english)}
+                <div class="word-item">
+                    <div class="word-main">
+                        <span class="word-korean">{word.korean}</span>
+                        <span class="word-english">{word.english}</span>
+                    </div>
+                    <p class="word-explanation">
+                        {word.explanation ?? "Explanation coming soon."}
+                    </p>
+                </div>
+            {:else}
+                <p class="empty-message">No words to display.</p>
+            {/each}
+        </div>
+    {/snippet}
+</Modal>
 
 <style>
     .backdrop-area {
@@ -167,6 +249,13 @@
         height: var(--navbar-height);
     }
 
+    .header-left {
+        display: flex;
+        align-items: center;
+        flex: 1;
+        min-width: 0;
+    }
+
     .brand {
         margin: 0;
         color: var(--color-neutral-100);
@@ -174,150 +263,153 @@
         letter-spacing: 0.01em;
         font-size: var(--font-size-base);
     }
-
-    .primary-navigation ul {
+    
+    /* Progress bar styles */
+    .progress-container {
         display: flex;
-        gap: var(--space-m);
+        align-items: center;
+        max-width: 200px;
+        width: 100%;
+    }
+    
+    .progress-bar-track {
+        flex: 1;
+        height: 8px;
+        background-color: var(--color-neutral-700);
+        border-radius: var(--border-radius-s);
+        overflow: hidden;
+    }
+    
+    .progress-bar-fill {
+        height: 100%;
+        background-color: var(--color-accent-500);
+        border-radius: var(--border-radius-s);
+        transition: width var(--transition-normal);
     }
 
-    .primary-navigation button {
-        padding: var(--space-s);
-        color: var(--color-neutral-300);
-        background: transparent;
-        border: 0;
-        cursor: pointer;
-        transition: var(--transition-normal) color, var(--transition-normal) transform;
-        font-weight: var(--font-weight-semi-bold);
-        font-size: var(--font-size-base);
+    /* Icon button group */
+    .icon-group {
+        display: flex;
+        align-items: center;
+        gap: var(--space-xs);
     }
-
-    .primary-navigation button:hover,
-    .primary-navigation button:focus-visible {
-        color: var(--color-accent-500);
-        transform: translateY(-1px);
-    }
-
-    .menu-toggle-button {
-        display: none;
-        background-color: transparent;
-        padding: 0.5rem 0 0.5rem 0.5rem;
-        border: 0;
-        cursor: pointer;
-        color: var(--color-neutral-100);
+    
+    .icon-button {
+        position: relative;
+        display: flex;
         align-items: center;
         justify-content: center;
-        transition: var(--transition-normal) color;
+        padding: var(--space-xs);
+        background: transparent;
+        border: 0;
+        border-radius: var(--border-radius-s);
+        cursor: pointer;
+        color: var(--color-neutral-300);
+        transition: var(--transition-normal) color, var(--transition-normal) background-color;
     }
-
-    .menu-toggle-button:hover,
-    .menu-toggle-button:focus-visible {
+    
+    .icon-button:hover,
+    .icon-button:focus-visible {
         color: var(--color-accent-500);
-    }
-
-    .menu-toggle-button svg {
-        width: 1.5rem;
-        height: 1.5rem;
-    }
-
-    .close-icon {
-        display: none;
-    }
-
-    .modal-backdrop {
-        position: fixed;
-        inset: 0;
-        background-color: hsl(0 0% 0% / 0.65);
-        display: grid;
-        place-items: center;
-        padding: var(--space-m);
-        z-index: 40;
-    }
-
-    .modal {
         background-color: var(--color-neutral-800);
-        color: var(--color-neutral-100);
-        padding: var(--space-l);
-        border-radius: var(--border-radius-m);
-        box-shadow: var(--box-shadow-m);
-        width: min(24rem, 100%);
-        display: grid;
-        gap: var(--space-m);
+    }
+    
+    .icon-button :global(.icon) {
+        width: 1.25rem;
+        height: 1.25rem;
     }
 
-    .modal-header {
+    /* Streak modal styles */
+    .streak-display {
         display: flex;
         align-items: center;
-        justify-content: space-between;
-        gap: var(--space-s);
+        justify-content: center;
+        gap: var(--space-m);
+        padding: var(--space-l);
+    }
+    
+    .streak-display :global(.streak-icon) {
+        width: 3rem;
+        height: 3rem;
+        color: var(--color-accent-red-500);
+    }
+    
+    .streak-count {
+        font-size: var(--text-size-4xl);
+        font-weight: var(--font-weight-bold);
+        color: var(--color-neutral-100);
     }
 
-    .modal h2 {
-        margin: 0;
-        font-size: var(--text-size-xl);
-    }
-
-    .modal p {
+    /* Modal content styles */
+    .modal-text {
         margin: 0;
         color: var(--color-neutral-200);
         line-height: var(--font-line-height);
     }
-
-    .close {
-        background: transparent;
-        border: 0;
-        color: var(--color-neutral-300);
+    
+    /* Filter toggle */
+    .filter-toggle {
+        padding-block: var(--space-xs);
+        border-bottom: 1px solid var(--color-neutral-700);
+    }
+    
+    .toggle-label {
+        display: flex;
+        align-items: center;
+        gap: var(--space-s);
         cursor: pointer;
-        font-size: 1.5rem;
-        line-height: 1;
+        color: var(--color-neutral-200);
+        font-size: var(--font-size-small);
     }
-
-    .close:hover,
-    .close:focus-visible {
-        color: var(--color-accent-500);
+    
+    .toggle-label input[type="checkbox"] {
+        accent-color: var(--color-accent-500);
+        width: 1rem;
+        height: 1rem;
     }
-
-    @media only screen and (max-width: 27.999rem) {
-        header {
-            position: relative;
-        }
-
-        .primary-navigation ul {
-            display: none;
-        }
-
-        .menu-toggle-button {
-            display: inline-flex;
-            position: absolute;
-            z-index: 30;
-            right: 1rem;
-        }
-
-        .menu-toggle-button[aria-expanded="true"] .close-icon {
-            display: block;
-        }
-
-        .menu-toggle-button[aria-expanded="true"] .hamburger-icon {
-            display: none;
-        }
-
-        .menu-toggle-button[aria-expanded="true"] ~ .primary-navigation {
-            display: block;
-            position: fixed;
-            top: 0;
-            right: 0;
-            bottom: 0;
-            width: 80%;
-            margin-left: auto;
-            box-shadow: 0 0 0 100vmax hsl(0 0% 0% / 0.7);
-            background-color: var(--color-neutral-900);
-            z-index: 20;
-        }
-
-        .menu-toggle-button[aria-expanded="true"] ~ .primary-navigation ul {
-            margin-top: 20vh;
-            display: grid;
-            gap: 2rem;
-            margin-left: max(3rem, 20vw);
-        }
+    
+    /* Word list */
+    .word-list {
+        overflow-y: auto;
+        max-height: 50vh;
+        display: grid;
+        gap: var(--space-s);
+    }
+    
+    .word-item {
+        padding: var(--space-s);
+        background-color: var(--color-neutral-700);
+        border-radius: var(--border-radius-s);
+    }
+    
+    .word-main {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        gap: var(--space-m);
+        margin-bottom: var(--space-xs);
+    }
+    
+    .word-korean {
+        font-size: var(--font-size-large);
+        font-weight: var(--font-weight-semi-bold);
+        color: var(--color-neutral-100);
+    }
+    
+    .word-english {
+        color: var(--color-neutral-300);
+        font-size: var(--font-size-base);
+    }
+    
+    .word-explanation {
+        font-size: var(--font-size-small);
+        color: var(--color-neutral-400);
+        font-style: italic;
+    }
+    
+    .empty-message {
+        text-align: center;
+        color: var(--color-neutral-400);
+        padding: var(--space-l);
     }
 </style>

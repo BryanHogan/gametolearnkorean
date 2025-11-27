@@ -16,6 +16,7 @@ import Table from "./TableIcon.svelte";
 import Grip from "./GripIcon.svelte";
 import Info from "./InfoIcon.svelte";
 import CircleCheck from "./CircleCheckIcon.svelte";
+import Book from "./BookIcon.svelte";
 
 const Icons = {
     home: Home,
@@ -34,7 +35,8 @@ const Icons = {
     table: Table,
     grip: Grip,
     info: Info,
-    CircleCheck: CircleCheck
+    CircleCheck: CircleCheck,
+    book: Book
 };
 
 export default Icons;

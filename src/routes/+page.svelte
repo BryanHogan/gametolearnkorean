@@ -1,5 +1,6 @@
 <script>
     import { Game } from "$lib/util/game.svelte.js";
+    import Header from "$lib/components/Header.svelte";
     import StartScreen from "$lib/components/StartScreen.svelte";
     import EndScreen from "$lib/components/EndScreen.svelte";
     import PairsTask from "$lib/components/tasks/PairsTask.svelte";
@@ -15,6 +16,7 @@
     }
 </script>
 
+<Header {game} />
 <main class="base-layout">
     {#if game.gameCompleted}
         <EndScreen {game} onRestart={restartGame} />

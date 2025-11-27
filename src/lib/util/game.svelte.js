@@ -31,6 +31,10 @@ export class Game {
     timeAtGameStart = $state(new Date());
     timeAtGameEnd = $state(null);
     
+    // Streak tracking
+    currentStreak = $state(0); // Consecutive correct answers since last mistake
+    recentlyFailedWords = $state([]); // Words failed since last correct answer (for book modal)
+    
     // Round State
     failedTries = $state(0);
     
@@ -88,6 +92,8 @@ export class Game {
         this.level = 1;
         this.totalCorrect = 0;
         this.totalMistakes = 0;
+        this.currentStreak = 0;
+        this.recentlyFailedWords = [];
         this.timeAtGameStart = new Date();
         this.levelReset();
         
@@ -299,6 +305,8 @@ export class Game {
         
         if (isCorrectFirstTry) {
             this.totalCorrect += 1;
+            this.currentStreak += 1;
+            this.recentlyFailedWords = []; // Clear failed words on correct answer
             
             if (wordInPool.sessionProgress === taskProgressLevel) {
                 // Advance progress only if word is at the matching progress level
@@ -317,6 +325,16 @@ export class Game {
             w => w.korean === word.korean && w.english === word.english
         );
         if (!wordInPool) return;
+        
+        // Reset streak and track failed word
+        this.currentStreak = 0;
+        // Add to recently failed if not already there
+        const alreadyFailed = this.recentlyFailedWords.some(
+            w => w.korean === word.korean && w.english === word.english
+        );
+        if (!alreadyFailed) {
+            this.recentlyFailedWords = [...this.recentlyFailedWords, wordInPool];
+        }
         
         // Reduce progress by 1, minimum 0
         wordInPool.sessionProgress = Math.max(wordInPool.sessionProgress - 1, 0);
