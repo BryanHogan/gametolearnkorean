@@ -250,6 +250,9 @@ export class Game {
             return;
         }
         
+        // Reset failed words for the new round
+        this.recentlyFailedWords = [];
+        
         this.level += 1;
         this.initializeRound();
     }
@@ -306,7 +309,6 @@ export class Game {
         if (isCorrectFirstTry) {
             this.totalCorrect += 1;
             this.currentStreak += 1;
-            this.recentlyFailedWords = []; // Clear failed words on correct answer
             
             if (wordInPool.sessionProgress === taskProgressLevel) {
                 // Advance progress only if word is at the matching progress level
