@@ -1,5 +1,9 @@
 <script>
-    import { ttsEnabled } from "$lib/util/audio.svelte.js";
+    import { settings, updateSetting } from "$lib/util/settings.svelte.js";
+    
+    function handleTtsToggle(event) {
+        updateSetting('ttsEnabled', event.target.checked);
+    }
 </script>
 
 <div class="settings-list">
@@ -11,7 +15,8 @@
         <label class="toggle-switch">
             <input 
                 type="checkbox" 
-                bind:checked={ttsEnabled.value}
+                checked={settings.ttsEnabled}
+                onchange={handleTtsToggle}
             />
             <span class="toggle-slider"></span>
         </label>

@@ -3,8 +3,7 @@
  * Uses Web Speech API with Korean voice
  */
 
-/** @type {{ value: boolean }} */
-export const ttsEnabled = $state({ value: true });
+import { settings } from "$lib/util/settings.svelte.js";
 
 let koreanVoice = null;
 let voicesLoaded = false;
@@ -37,7 +36,7 @@ export function speakKorean(text) {
         return; // Not available in SSR or unsupported browsers
     }
     
-    if (!ttsEnabled.value) {
+    if (!settings.ttsEnabled) {
         return; // TTS is disabled by user
     }
     
