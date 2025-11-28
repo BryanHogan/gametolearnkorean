@@ -70,20 +70,41 @@ export function filterWordsByDifficulty(words, options = {}) {
 export function buildWordPool(words, options = {}) {
     const { poolLimit = "50", includeLevel1 = true, includeLevel2 = true, includeLevel3 = true, useExperienceBias = true } = options;
     const filteredWords = filterWordsByDifficulty(words, { includeLevel1, includeLevel2, includeLevel3 });
+    
+    // Return early if no words match the filters
+    if (filteredWords.length === 0) {
+        return [];
+    }
 
+    // Normalize poolLimit to string to handle both string and numeric values
+    const limit = String(poolLimit);
+    
     let selectedWords;
-    if (poolLimit === "unlimited") {
-        selectedWords = filteredWords;
-    } else if (poolLimit === "50") {
+    if (limit === "unlimited") {
+        // For unlimited, apply experience bias as reordering (or shuffle if disabled)
+        selectedWords = useExperienceBias 
+            ? selectWordsByExperience(filteredWords, filteredWords.length)
+            : shuffleWords(filteredWords);
+    } else if (limit === "50") {
         selectedWords = useExperienceBias 
             ? selectWordsByExperience(filteredWords, 50)
             : shuffleWords(filteredWords).slice(0, 50);
-    } else if (poolLimit === "20") {
+    } else if (limit === "20") {
         selectedWords = useExperienceBias 
             ? selectWordsByExperience(filteredWords, 20)
             : shuffleWords(filteredWords).slice(0, 20);
     } else {
-        selectedWords = filteredWords;
+        // Fallback for unknown limits: try to parse as number, otherwise use all
+        const numLimit = parseInt(limit, 10);
+        if (!isNaN(numLimit) && numLimit > 0) {
+            selectedWords = useExperienceBias 
+                ? selectWordsByExperience(filteredWords, numLimit)
+                : shuffleWords(filteredWords).slice(0, numLimit);
+        } else {
+            selectedWords = useExperienceBias 
+                ? selectWordsByExperience(filteredWords, filteredWords.length)
+                : shuffleWords(filteredWords);
+        }
     }
 
     // Initialize session progress for each word (starts at 0)

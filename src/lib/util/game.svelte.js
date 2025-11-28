@@ -1,4 +1,4 @@
-import { wordData, updateExperience } from "$lib/util/store.svelte.js";
+import { wordData, wordDataReady, updateExperience } from "$lib/util/store.svelte.js";
 import { buildWordPool, shuffleWords } from "$lib/util/word-selection.svelte.js";
 import { BlockTask } from "$lib/util/tasks/block-task.svelte.js";
 import { FreeFormTask } from "$lib/util/tasks/freeform-task.svelte.js";
@@ -27,6 +27,7 @@ export class Game {
     // Game State
     gameStart = $state(false);
     gameCompleted = $state(false);
+    noCardsSelected = $state(false); // True when word pool is empty due to filter settings
     level = $state(1);
     taskType = $state("pairs"); // "pairs", "blockwriting", "manyvsone", "freeformwriting"
     
@@ -96,9 +97,13 @@ export class Game {
         return Math.min(this.level / 5 + 5, 10);
     }
 
-    startGame() {
+    async startGame() {
+        // Wait for IndexedDB experience data to be loaded before building pool
+        await wordDataReady;
+        
         this.gameStart = true;
         this.gameCompleted = false;
+        this.noCardsSelected = false;
         this.level = 1;
         this.totalCorrect = 0;
         this.totalMistakes = 0;
@@ -114,6 +119,12 @@ export class Game {
             includeLevel3: this.includeLevel3Cards,
             useExperienceBias: this.useExperienceBias
         });
+        
+        // Guard against empty word pool (e.g., all difficulty levels unchecked)
+        if (this.wordPool.length === 0) {
+            this.noCardsSelected = true;
+            return;
+        }
         
         this.initializeRound();
     }
