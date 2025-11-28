@@ -87,14 +87,8 @@
     <header class="page-header">
         <Button type="transparent" abutton="true" ahref="/">
             <Icons.chevronLeft />
-            <span>Back</span>
         </Button>
-        <div class="page-heading">
-            <h1>Vocabulary</h1>
-            <p class="lede">
-                Track your progress. Words need {MAX_XP} XP to master.
-            </p>
-        </div>
+        <h1>Vocabulary</h1>
     </header>
 
     <section class="stats-strip">
@@ -212,25 +206,14 @@
     /* Header */
     .page-header {
         display: flex;
-        gap: var(--space-xs);
-        align-items: flex-start;
-    }
-
-    .page-heading {
-        display: grid;
+        align-items: center;
         gap: var(--space-2xs);
     }
 
-    .page-heading h1 {
+    .page-header h1 {
         margin: 0;
-        font-size: var(--text-size-2xl);
+        font-size: var(--text-size-xl);
         font-weight: var(--font-weight-bold);
-    }
-
-    .lede {
-        color: var(--color-neutral-400);
-        margin: 0;
-        font-size: var(--font-size-small);
     }
 
     /* Stats Strip */
