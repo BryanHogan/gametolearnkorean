@@ -11,6 +11,7 @@
 2. **Client-Only**: App is pre-rendered. Guard `window`/`indexedDB` access.
 3. **Persistence**: `wordData` merges static JSON with IndexedDB experience. Never modify `words.json` at runtime.
 4. **Structure**: Keep `+page.svelte` for orchestration. Logic in `src/lib/util`, UI in `src/lib/components`.
+5. **Plain JavaScript**: JavaScript files / parts use plain `.js` or `.svelte.js`
 
 ## Core Game Logic
 

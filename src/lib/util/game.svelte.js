@@ -1,4 +1,5 @@
 import { wordData, updateExperience } from "$lib/util/store.svelte.js";
+import { buildWordPool, shuffleWords } from "$lib/util/word-selection.svelte.js";
 import { BlockTask } from "$lib/util/tasks/block-task.svelte.js";
 import { FreeFormTask } from "$lib/util/tasks/freeform-task.svelte.js";
 import { ManyVsOneTask } from "$lib/util/tasks/many-vs-one-task.svelte.js";
@@ -10,6 +11,14 @@ const TASK_PROGRESS_MAP = {
     "manyvsone": 1,    // Task Type B - words at progress 1
     "blockwriting": 2, // Task Type C - words at progress 2
     "freeformwriting": 3 // Task Type D - words at progress 3
+};
+
+// XP awarded per task type on first-try success
+const XP_PER_TASK = {
+    "pairs": 1,
+    "manyvsone": 1,
+    "blockwriting": 2,
+    "freeformwriting": 5
 };
 
 const MAX_PROGRESS = 4;
@@ -97,41 +106,18 @@ export class Game {
         this.timeAtGameStart = new Date();
         this.levelReset();
         
-        let filteredWords = this.words.filter((word) => {
-            return (
-                (this.includeLevel1Cards && word.difficulty === 1) ||
-                (this.includeLevel2Cards && word.difficulty === 2) ||
-                (this.includeLevel3Cards && word.difficulty === 3)
-            );
+        this.wordPool = buildWordPool(this.words, {
+            poolLimit: this.wordPoolLimit,
+            includeLevel1: this.includeLevel1Cards,
+            includeLevel2: this.includeLevel2Cards,
+            includeLevel3: this.includeLevel3Cards
         });
-
-        let selectedWords;
-        if (this.wordPoolLimit == "unlimited") {
-            selectedWords = filteredWords;
-        } else if (this.wordPoolLimit == "50") {
-            selectedWords = this.shuffledWords(filteredWords).slice(0, 50);
-        } else if (this.wordPoolLimit == "20") {
-            selectedWords = this.shuffledWords(filteredWords).slice(0, 20);
-        } else {
-            selectedWords = filteredWords;
-        }
-        
-        // Initialize session progress for each word (starts at 0)
-        this.wordPool = selectedWords.map(word => ({
-            ...word,
-            sessionProgress: 0
-        }));
         
         this.initializeRound();
     }
 
     shuffledWords(array) {
-        const newArray = [...array];
-        for (let i = newArray.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
-        }
-        return newArray;
+        return shuffleWords(array);
     }
 
     selectTaskType() {        
@@ -260,11 +246,7 @@ export class Game {
     // Called when all words reach max progress
     completeSession() {
         this.timeAtGameEnd = new Date();
-        
-        // Award experience to all words in the pool
-        for (const word of this.wordPool) {
-            updateExperience(word.korean, word.english, 5);
-        }
+        // Experience is now awarded incrementally per task completion
         this.gameCompleted = true;
     }
     
@@ -309,6 +291,10 @@ export class Game {
         if (isCorrectFirstTry) {
             this.totalCorrect += 1;
             this.currentStreak += 1;
+            
+            // Award experience based on task type
+            const xpAmount = XP_PER_TASK[this.taskType] || 1;
+            updateExperience(wordInPool.korean, wordInPool.english, xpAmount);
             
             if (wordInPool.sessionProgress === taskProgressLevel) {
                 // Advance progress only if word is at the matching progress level
