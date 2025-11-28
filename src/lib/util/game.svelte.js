@@ -61,6 +61,7 @@ export class Game {
     includeLevel1Cards = $state(true);
     includeLevel2Cards = $state(true);
     includeLevel3Cards = $state(true);
+    useExperienceBias = $state(true);
 
     constructor() {
         // Initialize if needed
@@ -110,7 +111,8 @@ export class Game {
             poolLimit: this.wordPoolLimit,
             includeLevel1: this.includeLevel1Cards,
             includeLevel2: this.includeLevel2Cards,
-            includeLevel3: this.includeLevel3Cards
+            includeLevel3: this.includeLevel3Cards,
+            useExperienceBias: this.useExperienceBias
         });
         
         this.initializeRound();

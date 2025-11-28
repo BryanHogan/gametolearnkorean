@@ -34,6 +34,12 @@
             </label>
         </div>
     </div>
+    <div class="experience-bias-container">
+        <label>
+            <input type="checkbox" bind:checked={game.useExperienceBias} />
+            Prioritize less practiced words
+        </label>
+    </div>
 </div>
 
 <div class="margin-inline-auto" style="max-width: 350px; width: 100%">

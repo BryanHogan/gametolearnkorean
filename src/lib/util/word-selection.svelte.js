@@ -65,19 +65,23 @@ export function filterWordsByDifficulty(words, options = {}) {
 
 /**
  * Build a word pool for a game session.
- * Filters by difficulty, then selects based on experience weighting.
+ * Filters by difficulty, then selects based on experience weighting (or random if disabled).
  */
 export function buildWordPool(words, options = {}) {
-    const { poolLimit = "50", includeLevel1 = true, includeLevel2 = true, includeLevel3 = true } = options;
+    const { poolLimit = "50", includeLevel1 = true, includeLevel2 = true, includeLevel3 = true, useExperienceBias = true } = options;
     const filteredWords = filterWordsByDifficulty(words, { includeLevel1, includeLevel2, includeLevel3 });
 
     let selectedWords;
     if (poolLimit === "unlimited") {
         selectedWords = filteredWords;
     } else if (poolLimit === "50") {
-        selectedWords = selectWordsByExperience(filteredWords, 50);
+        selectedWords = useExperienceBias 
+            ? selectWordsByExperience(filteredWords, 50)
+            : shuffleWords(filteredWords).slice(0, 50);
     } else if (poolLimit === "20") {
-        selectedWords = selectWordsByExperience(filteredWords, 20);
+        selectedWords = useExperienceBias 
+            ? selectWordsByExperience(filteredWords, 20)
+            : shuffleWords(filteredWords).slice(0, 20);
     } else {
         selectedWords = filteredWords;
     }
