@@ -1,4 +1,5 @@
 import { getSimilarBlock, getRandomKoreanBlock } from "$lib/util/korean.svelte";
+import { speakKorean } from "$lib/util/audio.svelte.js";
 
 export class BlockTask {
     game = null;
@@ -50,6 +51,10 @@ export class BlockTask {
                 // Correct answer
                 const isFirstTry = this.failedTriesCurrentRound === 0;
                 this.game.updateWordProgress(this.currentWord, isFirstTry);
+                
+                // Speak the Korean word
+                speakKorean(this.koreanBlockWord);
+                
                 this.game.levelCompleted();
             } else {
                 // Wrong answer

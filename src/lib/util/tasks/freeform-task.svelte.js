@@ -1,3 +1,5 @@
+import { speakKorean } from "$lib/util/audio.svelte.js";
+
 export class FreeFormTask {
     game = null;
     
@@ -31,6 +33,10 @@ export class FreeFormTask {
             // Correct answer
             const isFirstTry = this.failedTries === 0;
             this.game.updateWordProgress(this.currentWord, isFirstTry);
+            
+            // Speak the Korean word
+            speakKorean(this.koreanWord);
+            
             this.showSuccess = true;
             // Brief delay before moving to next level for feedback
             setTimeout(() => {

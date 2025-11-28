@@ -1,3 +1,5 @@
+import { speakKorean } from "$lib/util/audio.svelte.js";
+
 export class ManyVsOneTask {
     game = null;
 
@@ -27,6 +29,10 @@ export class ManyVsOneTask {
         if (isCorrect) {
             const isFirstTry = !this.target.failedOnce;
             this.game.updateWordProgress(this.target, isFirstTry);
+            
+            // Speak the Korean word
+            speakKorean(this.target.korean);
+            
             this.game.levelCompleted();
         } else {
             this.game.totalMistakes += 1;

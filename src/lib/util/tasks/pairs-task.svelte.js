@@ -1,3 +1,5 @@
+import { speakKorean } from "$lib/util/audio.svelte.js";
+
 export class PairsTask {
     game = null;
 
@@ -40,6 +42,9 @@ export class PairsTask {
 
                 // Update progress based on first try success
                 this.game.updateWordProgress(card1, isFirstTry);
+                
+                // Speak the Korean word
+                speakKorean(card1.korean);
 
                 // Remove cards
                 this.englishCards = this.englishCards.filter(c => c.english !== card1.english);
