@@ -142,7 +142,7 @@
                         <option value={level}>Difficulty {level}</option>
                     {/each}
                 </select>
-                <select id="sort-select" bind:value={sortBy} aria-label="Sort words by">by">
+                <select id="sort-select" bind:value={sortBy} aria-label="Sort words by">
                     <option value="xp-desc">Most XP</option>
                     <option value="xp-asc">Least XP</option>
                     <option value="korean">Korean A-Z</option>
@@ -200,7 +200,9 @@
 <style>
     .vocabulary-view {
         padding-block: var(--space-m) var(--space-l);
-        gap: var(--space-m);
+        row-gap: var(--space-m);
+        column-gap: 0;
+        overflow-x: hidden;
     }
 
     /* Header */
@@ -225,6 +227,8 @@
         border: 1px solid var(--color-neutral-700);
         border-radius: var(--border-radius-m);
         padding: var(--space-s) var(--space-m);
+        max-width: 100%;
+        box-sizing: border-box;
     }
 
     .stat {
@@ -255,6 +259,8 @@
     .controls {
         display: grid;
         gap: var(--space-s);
+        max-width: 100%;
+        box-sizing: border-box;
     }
 
     .search input {
@@ -338,6 +344,7 @@
     .word-list {
         display: grid;
         gap: var(--space-xs);
+        max-width: 100%;
     }
 
     .word-card {
@@ -350,6 +357,8 @@
         border-radius: var(--border-radius-m);
         padding: var(--space-s) var(--space-m);
         transition: border-color var(--transition-normal);
+        max-width: 100%;
+        box-sizing: border-box;
     }
 
     .word-card:hover {
@@ -362,8 +371,9 @@
     }
 
     .word-main {
-        flex-shrink: 0;
+        flex: 1;
         min-width: 0;
+        overflow: hidden;
     }
 
     .word-korean {
@@ -371,20 +381,24 @@
         font-size: var(--text-size-xl);
         font-weight: var(--font-weight-semi-bold);
         line-height: 1.2;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 
     .word-english {
         margin: 0;
         color: var(--color-neutral-400);
         font-size: var(--font-size-small);
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 
     .word-progress {
         display: flex;
         align-items: center;
         gap: var(--space-s);
-        flex: 1;
-        max-width: 200px;
+        flex-shrink: 0;
+        width: 180px;
     }
 
     .progress-bar {
@@ -466,16 +480,23 @@
 
     /* Mobile adjustments */
     @media (max-width: 30rem) {
-        .page-header {
-            flex-direction: column;
+        .vocabulary-view {
+            padding-block: var(--space-s) var(--space-m);
+            row-gap: var(--space-s);
+            column-gap: 0;
         }
 
         .stats-strip {
-            padding: var(--space-xs) var(--space-s);
+            padding: var(--space-xs) var(--space-2xs);
+            gap: var(--space-2xs);
         }
 
         .stat-value {
             font-size: var(--font-size-large);
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
         }
 
         .stat-divider {
@@ -485,29 +506,48 @@
         .word-card {
             flex-direction: column;
             align-items: stretch;
-            gap: var(--space-s);
+            gap: var(--space-xs);
+            padding: var(--space-s);
+        }
+
+        .word-korean {
+            font-size: var(--font-size-large);
         }
 
         .word-progress {
-            max-width: none;
+            width: 100%;
+            justify-content: space-between;
+            gap: var(--space-xs);
         }
 
         .filter-sort-row {
             flex-direction: column;
             align-items: stretch;
+            gap: var(--space-xs);
         }
 
         .pill-group {
+            width: 100%;
             justify-content: center;
         }
 
+        .pill-group button {
+            flex: 1;
+            text-align: center;
+            padding: var(--space-xs) var(--space-2xs);
+        }
+
         .select-group {
-            flex-direction: column;
+            flex-direction: row;
             width: 100%;
         }
 
         select {
-            width: 100%;
+            flex: 1;
+        }
+
+        .search input {
+            padding: var(--space-s);
         }
     }
 </style>
