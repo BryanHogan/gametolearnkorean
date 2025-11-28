@@ -52,6 +52,12 @@
     <Button type="accent grow" onclick={() => game.startGame()}>Start Game</Button>
 </div>
 
+<div class="margin-inline-auto extra-actions" style="max-width: 350px; width: 100%">
+    <Button type="neutral grow" abutton="true" ahref="/vocabulary">
+        View Vocabulary
+    </Button>
+</div>
+
 <div class="stats-container">
     <p>Completion rate level 1 cards: {game.calculateCompletionRate(1)}%</p>
     <p>Completion rate level 2 cards: {game.calculateCompletionRate(2)}%</p>
@@ -90,6 +96,9 @@
         border-radius: var(--border-radius-s);
         padding: var(--space-2xs);
         accent-color: var(--color-accent-500);
+    }
+    .extra-actions {
+        margin-top: var(--space-s);
     }
     .stats-container {
         margin-inline: auto;
