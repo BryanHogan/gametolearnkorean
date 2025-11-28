@@ -32,12 +32,7 @@
             </div>
         </section>
     {:else if game.gameStart}
-        <section class="game-progress">
-            <div class="progress-indicator">
-                <span class="progress-label">Round</span>
-                <span class="progress-value">{game.level}</span>
-            </div>
-        </section>
+        <p class="round-indicator">Round: {game.level} | Match the pairs</p>
         
         {#if game.taskType === "pairs"}
             <PairsTask {game} />
@@ -67,31 +62,9 @@
         overflow-x: hidden;
     }
 
-    /* Game Progress */
-    .game-progress {
-        display: flex;
-        justify-content: center;
-    }
-
-    .progress-indicator {
-        display: flex;
-        align-items: center;
-        gap: var(--space-s);
-        background: var(--color-neutral-800);
-        border: 1px solid var(--color-neutral-700);
-        border-radius: var(--border-radius-m);
-        padding: var(--space-xs) var(--space-m);
-    }
-
-    .progress-label {
-        font-size: var(--font-size-small);
+    .round-indicator {
+        text-align: center;
         color: var(--color-neutral-400);
-    }
-
-    .progress-value {
-        font-size: var(--text-size-xl);
-        font-weight: var(--font-weight-bold);
-        color: var(--color-accent-500);
     }
 
     /* No Cards Message */
@@ -134,14 +107,6 @@
         .game-view {
             padding-block: var(--space-s) var(--space-m);
             row-gap: var(--space-s);
-        }
-
-        .progress-indicator {
-            padding: var(--space-xs) var(--space-s);
-        }
-
-        .progress-value {
-            font-size: var(--font-size-large);
         }
 
         .message-card {
