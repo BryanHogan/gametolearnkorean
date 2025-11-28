@@ -39,7 +39,7 @@ export function speakKorean(text) {
     
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = 'ko-KR';
-    utterance.rate = 0.85; // Slower for learning
+    utterance.rate = 1.0; // Firefox has issues with rates < 1
     utterance.pitch = 1.0;
     utterance.volume = 1.0;
     

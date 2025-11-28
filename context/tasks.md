@@ -12,6 +12,7 @@
 - [x] End of session screen with stats (time, rounds, mistakes)
 - [x] Header with progress bar + settings menu (burger icon)
 - [ ] Word experience view — see XP per word
+- [ ] Adjust typing task buttons -> Don't need clear button, only hint (not mistake but also won't increase progress) and submit button
 
 ## Features
 
@@ -25,7 +26,7 @@
 ### Feedback & Polish
 - [ ] Shake animation for wrong answers
 - [ ] Confetti/particle effect on level complete
-- [ ] After wrong answer: button to explain both words
+- [ ] After wrong answer: button to explain both words -> within book on Header bar
 
 ### Word Learning
 - [ ] Word explanations: background, tips, example sentences
