@@ -8,7 +8,7 @@
 - [x] Standardize task interface: all tasks use `setup()`, `handleInput()`, etc.
 
 ### Core Features
-- [ ] Play audio when Korean cards are clicked (text-to-speech)
+- [x] Play audio when Korean cards are clicked (text-to-speech)
 - [x] End of session screen with stats (time, rounds, mistakes)
 - [x] Header with progress bar + settings menu (burger icon)
 - [ ] Word experience view — see XP per word
@@ -35,7 +35,7 @@
 - [ ] Add words from Naver Dictionary groups
 
 ### Settings
-- [ ] Toggle sound effects
+- [x] Toggle sound effects (TTS)
 - [ ] Reset progress
 - [ ] Toggle difficulty levels
 - [ ] Toggle task types (pairs, many-vs-one, block writing, etc.)
