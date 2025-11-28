@@ -9,6 +9,7 @@ export class FreeFormTask {
     inputHint = $state("");
     failedTries = $state(0);
     showSuccess = $state(false);
+    hintUsed = $state(false);
     currentWord = null;
 
     constructor(game) {
@@ -23,6 +24,7 @@ export class FreeFormTask {
         this.inputHint = "";
         this.failedTries = 0;
         this.showSuccess = false;
+        this.hintUsed = false;
     }
 
     handleInput() {
@@ -31,7 +33,7 @@ export class FreeFormTask {
         
         if (normalizedInput === normalizedTarget) {
             // Correct answer
-            const isFirstTry = this.failedTries === 0;
+            const isFirstTry = this.failedTries === 0 && !this.hintUsed;
             this.game.updateWordProgress(this.currentWord, isFirstTry);
             
             // Speak the Korean word
@@ -63,7 +65,27 @@ export class FreeFormTask {
         }
     }
 
-    clearInput() {
-        this.userInput = "";
+    showHint() {
+        // Calculate current hint length
+        const hintPrefix = "Hint: ";
+        const answerPrefix = "Answer: ";
+        let currentHintLength = 0;
+        
+        if (this.inputHint.startsWith(hintPrefix)) {
+            currentHintLength = this.inputHint.replace(hintPrefix, "").replace("...", "").length;
+        } else if (this.inputHint.startsWith(answerPrefix)) {
+            // Already showing full answer
+            return;
+        }
+        
+        // Progressive reveal - show one more character
+        const nextHintLength = currentHintLength + 1;
+        this.hintUsed = true;
+        
+        if (nextHintLength >= this.koreanWord.length) {
+            this.inputHint = answerPrefix + this.koreanWord;
+        } else {
+            this.inputHint = hintPrefix + this.koreanWord.slice(0, nextHintLength) + "...";
+        }
     }
 }

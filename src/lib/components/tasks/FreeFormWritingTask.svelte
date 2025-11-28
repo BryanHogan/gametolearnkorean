@@ -39,9 +39,9 @@
     <div class="button-row">
         <Button 
             type="grow accent-low" 
-            onclick={() => game.freeFormTask.clearInput()}
+            onclick={() => game.freeFormTask.showHint()}
         >
-            Clear
+            Hint
         </Button>
         <Button 
             type="grow accent-low" 
