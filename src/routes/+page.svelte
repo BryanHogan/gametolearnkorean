@@ -18,23 +18,26 @@
 </script>
 
 <Header {game} />
-<main class="base-layout">
+<main class="base-layout game-view">
     {#if game.gameCompleted}
         <EndScreen {game} onRestart={restartGame} />
     {:else if game.noCardsSelected}
-        <div class="no-cards-message">
-            <h2>No Cards Selected</h2>
-            <p>Please select at least one difficulty level to start the game.</p>
-            <Button type="accent" onclick={() => { game.noCardsSelected = false; game.gameStart = false; }}>
-                Back to Settings
-            </Button>
-        </div>
+        <section class="no-cards-message">
+            <div class="message-card">
+                <h2>No Cards Selected</h2>
+                <p>Please select at least one difficulty level to start the game.</p>
+                <Button type="accent" onclick={() => { game.noCardsSelected = false; game.gameStart = false; }}>
+                    Back to Settings
+                </Button>
+            </div>
+        </section>
     {:else if game.gameStart}
-        <div class="progress-bar margin-top-m margin-bottom-s margin-inline-auto">
-            <p class="text-align-center">
-                Round: {game.level} 
-            </p>
-        </div>
+        <section class="game-progress">
+            <div class="progress-indicator">
+                <span class="progress-label">Round</span>
+                <span class="progress-value">{game.level}</span>
+            </div>
+        </section>
         
         {#if game.taskType === "pairs"}
             <PairsTask {game} />
@@ -57,28 +60,93 @@
 </main>
 
 <style>
-    .progress-bar {
-        max-width: 400px;
+    .game-view {
+        padding-block: var(--space-m) var(--space-l);
+        row-gap: var(--space-m);
+        column-gap: 0;
+        overflow-x: hidden;
     }
-    
+
+    /* Game Progress */
+    .game-progress {
+        display: flex;
+        justify-content: center;
+    }
+
+    .progress-indicator {
+        display: flex;
+        align-items: center;
+        gap: var(--space-s);
+        background: var(--color-neutral-800);
+        border: 1px solid var(--color-neutral-700);
+        border-radius: var(--border-radius-m);
+        padding: var(--space-xs) var(--space-m);
+    }
+
+    .progress-label {
+        font-size: var(--font-size-small);
+        color: var(--color-neutral-400);
+    }
+
+    .progress-value {
+        font-size: var(--text-size-xl);
+        font-weight: var(--font-weight-bold);
+        color: var(--color-accent-500);
+    }
+
+    /* No Cards Message */
     .no-cards-message {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: var(--space-xl) 0;
+    }
+
+    .message-card {
         display: flex;
         flex-direction: column;
         align-items: center;
-        justify-content: center;
         text-align: center;
-        padding: var(--space-xl);
-        margin-top: var(--space-xl);
+        background: var(--color-neutral-800);
+        border: 1px solid var(--color-neutral-700);
+        border-radius: var(--border-radius-m);
+        padding: var(--space-xl) var(--space-l);
         gap: var(--space-m);
+        max-width: 400px;
+        width: 100%;
     }
     
-    .no-cards-message h2 {
-        font-size: var(--text-size-2xl);
+    .message-card h2 {
+        margin: 0;
+        font-size: var(--text-size-xl);
+        font-weight: var(--font-weight-bold);
         color: var(--color-neutral-100);
     }
     
-    .no-cards-message p {
+    .message-card p {
+        margin: 0;
         color: var(--color-neutral-400);
+        font-size: var(--font-size-small);
+    }
+
+    /* Mobile adjustments */
+    @media (max-width: 30rem) {
+        .game-view {
+            padding-block: var(--space-s) var(--space-m);
+            row-gap: var(--space-s);
+        }
+
+        .progress-indicator {
+            padding: var(--space-xs) var(--space-s);
+        }
+
+        .progress-value {
+            font-size: var(--font-size-large);
+        }
+
+        .message-card {
+            padding: var(--space-l) var(--space-m);
+        }
     }
 </style>
 

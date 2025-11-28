@@ -10,99 +10,209 @@
     }
 </script>
 
-<h1 class="text-align-center margin-top-m margin-bottom-s">
-    Game To Learn Korean
-</h1>
+<header class="page-header">
+    <h1>Game To Learn Korean</h1>
+</header>
 
-<div class="options-container">
-    <div class="wordpool-option-container">
-        <label for="wordpool-select">Select wordpool to use:</label>
+<section class="settings-card">
+    <div class="setting-group">
+        <label class="setting-label" for="wordpool-select">Word Pool Size</label>
         <select id="wordpool-select" bind:value={game.wordPoolLimit}>
             <option value="unlimited">Unlimited</option>
             <option value="50">50 words</option>
             <option value="20">20 words</option>
         </select>
     </div>
-    <div class="difficulty-checkbox-container">
-        <p class="margin-bottom-xs">Select difficulty levels to include:</p>
-        <div>
-            <label>
+
+    <div class="setting-group">
+        <p class="setting-label">Difficulty Levels</p>
+        <div class="difficulty-pills">
+            <label class:active={game.includeLevel1Cards}>
                 <input type="checkbox" bind:checked={game.includeLevel1Cards} />
                 Level 1
             </label>
-            <label>
+            <label class:active={game.includeLevel2Cards}>
                 <input type="checkbox" bind:checked={game.includeLevel2Cards} />
                 Level 2
             </label>
-            <label>
+            <label class:active={game.includeLevel3Cards}>
                 <input type="checkbox" bind:checked={game.includeLevel3Cards} />
                 Level 3
             </label>
         </div>
     </div>
-    <div class="experience-bias-container">
-        <label>
+
+    <div class="setting-group">
+        <p class="setting-label">Further Settings</p>
+        <label class="toggle-option">
             <input type="checkbox" checked={game.useExperienceBias} onchange={handleExperienceBiasChange} />
-            Prioritize less practiced words
+            <span>Prioritize less practiced words</span>
         </label>
     </div>
-</div>
+</section>
 
-<div class="margin-inline-auto" style="max-width: 350px; width: 100%">
-    <Button type="accent grow" onclick={() => game.startGame()}>Start Game</Button>
-</div>
+<section class="action-buttons">
+    <Button type="accent grow" onclick={() => game.startGame()}><strong>Start Game</strong></Button>
+    <a href="/vocabulary" class="vocab-link">or browse your vocabulary →</a>
+</section>
 
-<div class="margin-inline-auto extra-actions" style="max-width: 350px; width: 100%">
-    <Button type="neutral grow" abutton="true" ahref="/vocabulary">
-        View Vocabulary
-    </Button>
-</div>
-
-<div class="stats-container">
-    <p>Completion rate level 1 cards: {game.calculateCompletionRate(1)}%</p>
-    <p>Completion rate level 2 cards: {game.calculateCompletionRate(2)}%</p>
-    <p>Completion rate level 3 cards: {game.calculateCompletionRate(3)}%</p>
-</div>
+<footer class="completion-stats">
+    <p class="stats-heading">Your Progress</p>
+    <span>Difficulty 1 mastered: {game.calculateCompletionRate(1)}%</span>
+    <span>Difficulty 2 mastered: {game.calculateCompletionRate(2)}%</span>
+    <span>Difficulty 3 mastered: {game.calculateCompletionRate(3)}%</span>
+</footer>
 
 <style>
-    .options-container {
-        max-width: 450px;
-        width: 100%;
-        margin: var(--space-s) auto;
-    }
-    .options-container > div {
-        padding: var(--space-m);
-        margin-block: var(--space-m);
-        background-color: var(--color-neutral-800);
-        border-radius: var(--border-radius-m);
-    }
-    .difficulty-checkbox-container > div {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: flex-start;
-        gap: var(--space-s);
-    }
-    .difficulty-checkbox-container > div > * {
-        border: 1px solid var(--color-neutral-700);
-        padding: var(--space-2xs);
-        border-radius: var(--border-radius-s);
+    /* Header */
+    .page-header {
+        text-align: center;
     }
 
-    .options-container select,
-    .options-container input[type="checkbox"] {
-        margin-right: var(--space-2xs);
-        background-color: var(--color-neutral-700);
-        border: 1px solid var(--color-accent-800);
-        border-radius: var(--border-radius-s);
-        padding: var(--space-2xs);
-        accent-color: var(--color-accent-500);
+    .page-header h1 {
+        margin: 0;
+        font-size: var(--text-size-xl);
+        font-weight: var(--font-weight-bold);
     }
-    .extra-actions {
-        margin-top: var(--space-s);
-    }
-    .stats-container {
+
+    /* Settings Card */
+    .settings-card {
+        background: var(--color-neutral-800);
+        border: 1px solid var(--color-neutral-700);
+        border-radius: var(--border-radius-m);
+        padding: var(--space-m);
+        max-width: 400px;
+        width: 100%;
         margin-inline: auto;
-        margin-block: var(--space-xl);
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-m);
+    }
+
+    .setting-group {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-xs);
+    }
+
+    .setting-label {
+        margin: 0;
+        font-size: var(--font-size-small);
+        color: var(--color-neutral-400);
+    }
+
+    .settings-card select {
+        width: 100%;
+        padding: var(--space-xs) var(--space-s);
+        border-radius: var(--border-radius-s);
+        border: 1px solid var(--color-neutral-700);
+        background: var(--color-neutral-700);
+        color: var(--color-neutral-100);
+        font-size: 1rem;
+        cursor: pointer;
+    }
+
+    .settings-card select:focus {
+        outline: none;
+        border-color: var(--color-accent-600);
+    }
+
+    /* Difficulty Pills */
+    .difficulty-pills {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--space-xs);
+    }
+
+    .difficulty-pills label {
+        display: flex;
+        align-items: center;
+        gap: var(--space-2xs);
+        padding: var(--space-xs) var(--space-s);
+        background: var(--color-neutral-900);
+        border: 1px solid var(--color-neutral-700);
+        border-radius: var(--border-radius-s);
+        font-size: var(--font-size-small);
         color: var(--color-neutral-300);
+        cursor: pointer;
+    }
+
+    .difficulty-pills label.active {
+        background: var(--color-neutral-700);
+        color: var(--color-neutral-100);
+    }
+
+    .difficulty-pills input[type="checkbox"] {
+        accent-color: var(--color-accent-500);
+        width: 1rem;
+        height: 1rem;
+    }
+
+    /* Toggle Option */
+    .toggle-option {
+        display: flex;
+        align-items: center;
+        gap: var(--space-s);
+        cursor: pointer;
+        color: var(--color-neutral-200);
+    }
+
+    .toggle-option input[type="checkbox"] {
+        accent-color: var(--color-accent-500);
+        width: 1.125rem;
+        height: 1.125rem;
+    }
+
+    /* Action Buttons */
+    .action-buttons {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: var(--space-s);
+        max-width: 350px;
+        width: 100%;
+        margin-inline: auto;
+    }
+
+    .vocab-link {
+        font-size: var(--font-size-base);
+        color: var(--color-neutral-400);
+        text-decoration: none;
+    }
+
+    .vocab-link:hover {
+        color: var(--color-accent-500);
+    }
+
+    /* Completion Stats */
+    .completion-stats {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: var(--space-2xs);
+        margin-top: var(--space-l);
+        font-size: var(--font-size-base);
+        color: var(--color-neutral-500);
+    }
+
+    .stats-heading {
+        margin: 0 0 var(--space-2xs) 0;
+        color: var(--color-neutral-400);
+        font-weight: var(--font-weight-semi-bold);
+    }
+
+    /* Mobile adjustments */
+    @media (max-width: 30rem) {
+        .settings-card {
+            padding: var(--space-s);
+        }
+
+        .difficulty-pills {
+            flex-direction: column;
+        }
+
+        .difficulty-pills label {
+            justify-content: center;
+        }
     }
 </style>
