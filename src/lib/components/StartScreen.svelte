@@ -129,7 +129,7 @@
         align-items: center;
         gap: var(--space-2xs);
         padding: var(--space-xs) var(--space-s);
-        background: var(--color-neutral-900);
+        background: var(--color-neutral-800);
         border: 1px solid var(--color-neutral-700);
         border-radius: var(--border-radius-s);
         font-size: var(--font-size-small);
