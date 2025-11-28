@@ -19,13 +19,10 @@ export function shuffleWords(array) {
  * Words with 0 XP have weight 1, higher XP reduces weight at half rate, minimum 0.1.
  */
 export function selectWordsByExperience(words, limit) {
-    if (words.length <= limit) {
-        return shuffleWords(words);
-    }
-
     const selected = [];
     const available = [...words];
 
+    // Select up to the requested limit (or all available) with weighted ordering
     while (selected.length < limit && available.length > 0) {
         // Calculate weights - halved reduction rate with minimum weight of 0.1
         const weights = available.map(w => Math.max(0.1, 1 / (w.experience * 0.5 + 1)));
