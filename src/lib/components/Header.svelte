@@ -69,12 +69,6 @@
     const hasFailedWords = $derived((game?.recentlyFailedWords?.length ?? 0) > 0);
     const currentStreak = $derived(game?.currentStreak ?? 0);
     
-    // Gradual flame styling based on streak
-    // Opacity: 0.4 at 0 streak, gradually increases to 1.0 at streak 10+
-    const flameOpacity = $derived(Math.min(1, 0.4 + (currentStreak / 10) * 0.6));
-    // Color transition: neutral gray -> red, starts at streak 10, full red at 50
-    const flameRedAmount = $derived(Math.min(100, Math.max(0, ((currentStreak - 10) / 40) * 100)));
-    
     // Filtered words for book modal
     const displayedWords = $derived.by(() => {
         if (!game?.wordPool) return [];
@@ -111,8 +105,7 @@
                 <!-- Streak flame -->
                 <button 
                     type="button" 
-                    class="icon-button flame-button"
-                    style="opacity: {flameOpacity}; --flame-color: color-mix(in srgb, var(--color-accent-red-500) {flameRedAmount}%, var(--color-neutral-300));"
+                    class="icon-button"
                     onclick={openStreak}
                     aria-label="View streak"
                     title="View streak"
@@ -324,18 +317,6 @@
     .icon-button :global(.icon) {
         width: 1.25rem;
         height: 1.25rem;
-    }
-    
-    /* Flame icon gradual color */
-    .icon-button.flame-button {
-        color: var(--flame-color, var(--color-neutral-300));
-    }
-    
-    .icon-button.flame-button:hover,
-    .icon-button.flame-button:focus-visible {
-        color: var(--flame-color, var(--color-neutral-300));
-        filter: brightness(1.2);
-        background-color: var(--color-neutral-800);
     }
 
     /* Streak modal styles */
