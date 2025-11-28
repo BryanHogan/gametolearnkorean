@@ -1,61 +1,41 @@
-/**
- * User settings store with localStorage persistence
- */
+const STORAGE_KEY = 'gtlk-settings';
+const canUseLocalStorage = typeof window !== 'undefined';
 
-const SETTINGS_STORAGE_KEY = 'gtlk-settings';
-
-const canUseLocalStorage = 
-    typeof window !== 'undefined' && typeof localStorage !== 'undefined';
-
-/** @type {{ ttsEnabled: boolean }} */
 const defaultSettings = {
     ttsEnabled: true
 };
 
-/** @type {{ ttsEnabled: boolean }} */
 export const settings = $state({ ...defaultSettings });
 
-/**
- * Load settings from localStorage
- */
 function loadSettings() {
     if (!canUseLocalStorage) return;
     
     try {
-        const saved = localStorage.getItem(SETTINGS_STORAGE_KEY);
+        const saved = localStorage.getItem(STORAGE_KEY);
         if (saved) {
-            const parsed = JSON.parse(saved);
-            Object.assign(settings, { ...defaultSettings, ...parsed });
+            Object.assign(settings, { ...defaultSettings, ...JSON.parse(saved) });
         }
     } catch (e) {
-        console.warn('Failed to load settings from localStorage', e);
+        console.warn('Failed to load settings', e);
     }
 }
 
-/**
- * Save settings to localStorage
- */
 function saveSettings() {
     if (!canUseLocalStorage) return;
     
     try {
-        localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(settings));
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(settings));
     } catch (e) {
-        console.warn('Failed to save settings to localStorage', e);
+        console.warn('Failed to save settings', e);
     }
 }
 
-/**
- * Update a setting and persist to localStorage
- * @param {keyof typeof defaultSettings} key
- * @param {any} value
- */
 export function updateSetting(key, value) {
     settings[key] = value;
     saveSettings();
 }
 
-// Load settings on initialization
+// Load on init
 if (canUseLocalStorage) {
     loadSettings();
 }
