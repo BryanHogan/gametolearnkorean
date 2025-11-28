@@ -11,7 +11,7 @@
 - [x] Play audio when Korean cards are clicked (text-to-speech)
 - [x] End of session screen with stats (time, rounds, mistakes)
 - [x] Header with progress bar + settings menu (burger icon)
-- [ ] Word experience view — see XP per word
+- [ ] Word experience view — see XP per word - Adjust that words can only gain experience above 20 through the free-writing task type.
 - [ ] Adjust typing task buttons -> Don't need clear button, only hint (not mistake but also won't increase progress) and submit button
 
 ## Features
