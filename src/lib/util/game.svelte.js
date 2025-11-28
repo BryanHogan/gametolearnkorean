@@ -1,5 +1,6 @@
 import { wordData, wordDataReady, updateExperience } from "$lib/util/store.svelte.js";
 import { buildWordPool, shuffleWords } from "$lib/util/word-selection.svelte.js";
+import { settings } from "$lib/util/settings.svelte.js";
 import { BlockTask } from "$lib/util/tasks/block-task.svelte.js";
 import { FreeFormTask } from "$lib/util/tasks/freeform-task.svelte.js";
 import { ManyVsOneTask } from "$lib/util/tasks/many-vs-one-task.svelte.js";
@@ -62,7 +63,7 @@ export class Game {
     includeLevel1Cards = $state(true);
     includeLevel2Cards = $state(true);
     includeLevel3Cards = $state(true);
-    useExperienceBias = $state(true);
+    useExperienceBias = $state(settings.experienceBias);
 
     constructor() {
         // Initialize if needed

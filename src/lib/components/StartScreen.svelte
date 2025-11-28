@@ -1,7 +1,13 @@
 <script>
     import Button from "$lib/components/Button.svelte";
+    import { updateSetting } from "$lib/util/settings.svelte.js";
     
     let { game } = $props();
+    
+    function handleExperienceBiasChange(event) {
+        game.useExperienceBias = event.target.checked;
+        updateSetting('experienceBias', event.target.checked);
+    }
 </script>
 
 <h1 class="text-align-center margin-top-m margin-bottom-s">
@@ -36,7 +42,7 @@
     </div>
     <div class="experience-bias-container">
         <label>
-            <input type="checkbox" bind:checked={game.useExperienceBias} />
+            <input type="checkbox" checked={game.useExperienceBias} onchange={handleExperienceBiasChange} />
             Prioritize less practiced words
         </label>
     </div>

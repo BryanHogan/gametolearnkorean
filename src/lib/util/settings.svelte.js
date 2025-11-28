@@ -2,7 +2,8 @@ const STORAGE_KEY = 'gtlk-settings';
 const canUseLocalStorage = typeof window !== 'undefined';
 
 const defaultSettings = {
-    ttsEnabled: true
+    ttsEnabled: true,
+    experienceBias: true
 };
 
 export const settings = $state({ ...defaultSettings });
