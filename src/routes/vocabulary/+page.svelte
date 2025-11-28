@@ -10,8 +10,11 @@
     let words = $state(wordData);
     let sortBy = $state("xp-desc");
     let viewFilter = $state("practice");
+    let difficultyFilter = $state("all");
     let searchTerm = $state("");
     let isLoadingExperience = $state(true);
+
+    const difficulties = $derived([...new Set(words.map(w => w.difficulty))].sort((a, b) => a - b));
 
     onMount(async () => {
         if (!isBrowser) {
@@ -39,6 +42,10 @@
             list = list.filter((word) => word.experience < MAX_XP);
         } else if (viewFilter === "mastered") {
             list = list.filter((word) => word.experience >= MAX_XP);
+        }
+
+        if (difficultyFilter !== "all") {
+            list = list.filter((word) => word.difficulty === Number(difficultyFilter));
         }
 
         if (searchTerm.trim()) {
@@ -134,12 +141,20 @@
                     Mastered
                 </button>
             </div>
-            <select id="sort-select" bind:value={sortBy} aria-label="Sort words by">
-                <option value="xp-desc">Most XP</option>
-                <option value="xp-asc">Least XP</option>
-                <option value="korean">Korean A-Z</option>
-                <option value="english">English A-Z</option>
-            </select>
+            <div class="select-group">
+                <select bind:value={difficultyFilter} aria-label="Filter by difficulty">
+                    <option value="all">All difficulties</option>
+                    {#each difficulties as level}
+                        <option value={level}>Difficulty {level}</option>
+                    {/each}
+                </select>
+                <select id="sort-select" bind:value={sortBy} aria-label="Sort words by">by">
+                    <option value="xp-desc">Most XP</option>
+                    <option value="xp-asc">Least XP</option>
+                    <option value="korean">Korean A-Z</option>
+                    <option value="english">English A-Z</option>
+                </select>
+            </div>
         </div>
     </section>
 
@@ -174,14 +189,18 @@
                                 style={`width: ${progressPercent(word.experience)}%`}
                             ></span>
                         </div>
-                        <span class="xp-label">{word.experience}/{MAX_XP}</span>
+                        {#if word.experience >= MAX_XP}
+                            <span class="xp-complete"><Icons.circleCheck /></span>
+                        {:else}
+                            <span class="xp-label">{word.experience} XP</span>
+                        {/if}
                     </div>
                 </article>
             {/each}
         {/if}
     </section>
 
-    <p class="results-count">{filteredWords.length} words</p>
+    <p class="results-count">Showing {filteredWords.length} of {totalWords} words</p>
 </main>
 
 <style>
@@ -312,6 +331,11 @@
         color: var(--color-neutral-100);
     }
 
+    .select-group {
+        display: flex;
+        gap: var(--space-xs);
+    }
+
     select {
         background: var(--color-neutral-800);
         color: var(--color-neutral-300);
@@ -417,8 +441,19 @@
         font-size: var(--font-size-small);
         color: var(--color-neutral-500);
         font-variant-numeric: tabular-nums;
-        min-width: 45px;
+        min-width: 50px;
         text-align: right;
+    }
+
+    .xp-complete {
+        color: var(--color-accent-500);
+        display: flex;
+        align-items: center;
+    }
+
+    .xp-complete :global(svg) {
+        width: 1.25rem;
+        height: 1.25rem;
     }
 
     /* Empty State */
@@ -481,6 +516,11 @@
 
         .pill-group {
             justify-content: center;
+        }
+
+        .select-group {
+            flex-direction: column;
+            width: 100%;
         }
 
         select {
