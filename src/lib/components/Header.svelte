@@ -1,6 +1,7 @@
 <script>
     import Icons from "$lib/components/icons/index.js";
     import Modal from "$lib/components/Modal.svelte";
+    import Settings from "$lib/components/Settings.svelte";
     
     let { game = null } = $props();
     
@@ -179,9 +180,7 @@
 <!-- Settings Modal -->
 <Modal isOpen={isSettingsOpen} title="Settings" onClose={closeAll}>
     {#snippet children()}
-        <p class="modal-text">
-            Settings are coming soon.
-        </p>
+        <Settings />
     {/snippet}
 </Modal>
 

@@ -3,6 +3,9 @@
  * Uses Web Speech API with Korean voice
  */
 
+/** @type {{ value: boolean }} */
+export const ttsEnabled = $state({ value: true });
+
 let koreanVoice = null;
 let voicesLoaded = false;
 
@@ -32,6 +35,10 @@ if (typeof window !== 'undefined' && window.speechSynthesis) {
 export function speakKorean(text) {
     if (typeof window === 'undefined' || !window.speechSynthesis) {
         return; // Not available in SSR or unsupported browsers
+    }
+    
+    if (!ttsEnabled.value) {
+        return; // TTS is disabled by user
     }
     
     // Cancel any ongoing speech
