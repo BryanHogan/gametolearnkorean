@@ -36,8 +36,9 @@
         display: flex;
         justify-content: space-between;
         padding-block: var(--space-m);
-        min-width: 400px;
         gap: var(--space-xl);
+        width: 100%;
+        max-width: 32rem;
     }
     .card-grid {
         display: grid;
