@@ -10,7 +10,7 @@
 ### Core Features
 - [ ] Play audio when Korean cards are clicked (text-to-speech)
 - [x] End of session screen with stats (time, rounds, mistakes)
-- [ ] Header with progress bar + settings menu (burger icon)
+- [x] Header with progress bar + settings menu (burger icon)
 - [ ] Word experience view — see XP per word
 
 ## Features

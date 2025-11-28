@@ -23,7 +23,7 @@
     {:else if game.gameStart}
         <div class="progress-bar margin-top-m margin-bottom-s margin-inline-auto">
             <p class="text-align-center">
-                Level: {game.level} | Progress: {game.wordPool.filter(w => w.sessionProgress >= 4).length}/{game.wordPool.length} words mastered
+                Round: {game.level} 
             </p>
         </div>
         
