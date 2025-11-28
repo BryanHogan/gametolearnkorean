@@ -1,197 +1,239 @@
 <script>
-    import { wordData } from "$lib/util/store.svelte.js";
+    import { onMount } from "svelte";
     import Button from "$lib/components/Button.svelte";
     import Icons from "$lib/components/icons/index.js";
+    import { wordData, loadWordData } from "$lib/util/store.svelte.js";
 
     const MAX_XP = 25;
+    const isBrowser = typeof window !== "undefined";
 
-    // Filter & sort state
-    let sortBy = $state("xp-asc");
-    let filterDifficulty = $state("all");
-    let filterLearned = $state("all");
-    let searchQuery = $state("");
+    let words = $state(wordData);
+    let sortBy = $state("xp-desc");
+    let viewFilter = $state("practice");
+    let searchTerm = $state("");
+    let isLoadingExperience = $state(true);
 
-    // Stats - derived from reactive wordData
-    const totalWords = $derived(wordData.length);
-    const learnedWords = $derived(wordData.filter(w => w.experience >= MAX_XP).length);
-    const totalXP = $derived(wordData.reduce((sum, w) => sum + w.experience, 0));
+    onMount(async () => {
+        if (!isBrowser) {
+            isLoadingExperience = false;
+            return;
+        }
+        const loadedWords = await loadWordData();
+        words = [...loadedWords];
+        isLoadingExperience = false;
+    });
 
-    // Filtered and sorted words
+    const totalWords = $derived(words.length);
+    const masteredCount = $derived(words.filter((word) => word.experience >= MAX_XP).length);
+    const needsPracticeCount = $derived(words.filter((word) => word.experience < MAX_XP).length);
+    const averageXP = $derived(
+        words.length
+            ? Math.round(words.reduce((sum, word) => sum + word.experience, 0) / words.length)
+            : 0
+    );
+
     const filteredWords = $derived.by(() => {
-        let result = [...wordData];
+        let list = [...words];
 
-        // Filter by difficulty
-        if (filterDifficulty !== "all") {
-            result = result.filter(w => w.difficulty === parseInt(filterDifficulty));
+        if (viewFilter === "practice") {
+            list = list.filter((word) => word.experience < MAX_XP);
+        } else if (viewFilter === "mastered") {
+            list = list.filter((word) => word.experience >= MAX_XP);
         }
 
-        // Filter by learned status
-        if (filterLearned === "learned") {
-            result = result.filter(w => w.experience >= MAX_XP);
-        } else if (filterLearned === "unlearned") {
-            result = result.filter(w => w.experience < MAX_XP);
-        }
-
-        // Search filter
-        if (searchQuery.trim()) {
-            const query = searchQuery.toLowerCase().trim();
-            result = result.filter(w => 
-                w.korean.includes(query) || 
-                w.english.toLowerCase().includes(query)
+        if (searchTerm.trim()) {
+            const query = searchTerm.toLowerCase().trim();
+            list = list.filter(
+                (word) =>
+                    word.korean.includes(searchTerm.trim()) ||
+                    word.english.toLowerCase().includes(query)
             );
         }
 
-        // Sort
         switch (sortBy) {
             case "xp-asc":
-                result.sort((a, b) => a.experience - b.experience);
+                list.sort((a, b) => a.experience - b.experience);
                 break;
-            case "xp-desc":
-                result.sort((a, b) => b.experience - a.experience);
+            case "korean":
+                list.sort((a, b) => a.korean.localeCompare(b.korean, "ko"));
                 break;
-            case "alpha-kr":
-                result.sort((a, b) => a.korean.localeCompare(b.korean, "ko"));
+            case "english":
+                list.sort((a, b) => a.english.localeCompare(b.english, "en"));
                 break;
-            case "alpha-en":
-                result.sort((a, b) => a.english.localeCompare(b.english, "en"));
-                break;
+            default:
+                list.sort((a, b) => b.experience - a.experience);
         }
 
-        return result;
+        return list;
     });
 
-    const getProgressPercent = (xp) => Math.min(100, (xp / MAX_XP) * 100);
-    
-    const getProgressColor = (xp) => {
-        const percent = getProgressPercent(xp);
-        if (percent >= 100) return "var(--color-accent-500)";
-        if (percent >= 50) return "var(--color-accent-700)";
-        if (percent > 0) return "var(--color-accent-900)";
-        return "var(--color-neutral-700)";
+    const progressPercent = (experience) => Math.min(100, (experience / MAX_XP) * 100);
+    const progressTone = (experience) => {
+        if (experience >= MAX_XP) return "xp-max";
+        if (experience >= 15) return "xp-strong";
+        if (experience >= 5) return "xp-mid";
+        return "xp-low";
     };
 </script>
 
-<main class="base-layout vocabulary-page">
+<main class="base-layout vocabulary-view">
     <header class="page-header">
         <Button type="transparent" abutton="true" ahref="/">
             <Icons.chevronLeft />
+            <span>Back</span>
         </Button>
-        <h1>Vocabulary</h1>
+        <div class="page-heading">
+            <h1>Vocabulary</h1>
+            <p class="lede">
+                Track your progress. Words need {MAX_XP} XP to master.
+            </p>
+        </div>
     </header>
 
-    <!-- Stats summary -->
-    <section class="stats-summary">
-        <div class="stat-card">
+    <section class="stats-strip">
+        <div class="stat">
             <span class="stat-value">{totalWords}</span>
-            <span class="stat-label">Total Words</span>
+            <span class="stat-label">Total</span>
         </div>
-        <div class="stat-card">
-            <span class="stat-value">{learnedWords}</span>
-            <span class="stat-label">Learned</span>
+        <div class="stat-divider"></div>
+        <div class="stat">
+            <span class="stat-value">{needsPracticeCount}</span>
+            <span class="stat-label">Learning</span>
         </div>
-        <div class="stat-card">
-            <span class="stat-value">{totalXP}</span>
-            <span class="stat-label">Total XP</span>
+        <div class="stat-divider"></div>
+        <div class="stat">
+            <span class="stat-value">{masteredCount}</span>
+            <span class="stat-label">Mastered</span>
         </div>
-    </section>
-
-    <!-- Filters -->
-    <section class="filters">
-        <input 
-            type="search" 
-            placeholder="Search words..." 
-            bind:value={searchQuery}
-            class="search-input"
-        />
-        
-        <div class="filter-row">
-            <select bind:value={sortBy} class="filter-select">
-                <option value="xp-asc">XP: Low → High</option>
-                <option value="xp-desc">XP: High → Low</option>
-                <option value="alpha-kr">Korean A-Z</option>
-                <option value="alpha-en">English A-Z</option>
-            </select>
-
-            <select bind:value={filterDifficulty} class="filter-select">
-                <option value="all">All Levels</option>
-                <option value="1">Level 1</option>
-                <option value="2">Level 2</option>
-                <option value="3">Level 3</option>
-            </select>
-
-            <select bind:value={filterLearned} class="filter-select">
-                <option value="all">All</option>
-                <option value="learned">Learned</option>
-                <option value="unlearned">Unlearned</option>
-            </select>
+        <div class="stat-divider"></div>
+        <div class="stat">
+            <span class="stat-value">{averageXP}</span>
+            <span class="stat-label">Avg XP</span>
         </div>
     </section>
 
-    <!-- Word count -->
-    <p class="word-count">{filteredWords.length} words</p>
+    <section class="controls">
+        <div class="search">
+            <label class="visually-hidden" for="word-search">Search vocabulary</label>
+            <input
+                id="word-search"
+                type="search"
+                placeholder="Search words..."
+                bind:value={searchTerm}
+            />
+        </div>
+        <div class="filter-sort-row">
+            <div class="pill-group">
+                <button class={viewFilter === "practice" ? "active" : ""} onclick={() => (viewFilter = "practice")}>
+                    Learning
+                </button>
+                <button class={viewFilter === "all" ? "active" : ""} onclick={() => (viewFilter = "all")}>
+                    All
+                </button>
+                <button class={viewFilter === "mastered" ? "active" : ""} onclick={() => (viewFilter = "mastered")}>
+                    Mastered
+                </button>
+            </div>
+            <select id="sort-select" bind:value={sortBy} aria-label="Sort words by">
+                <option value="xp-desc">Most XP</option>
+                <option value="xp-asc">Least XP</option>
+                <option value="korean">Korean A-Z</option>
+                <option value="english">English A-Z</option>
+            </select>
+        </div>
+    </section>
 
-    <!-- Word list -->
     <section class="word-list">
-        {#each filteredWords as word (word.korean + word.english)}
-            <article class="word-card">
-                <div class="word-info">
-                    <span class="word-korean">{word.korean}</span>
-                    <span class="word-english">{word.english}</span>
-                </div>
-                <div class="word-progress">
-                    <div class="progress-bar-track">
-                        <div 
-                            class="progress-bar-fill"
-                            style="width: {getProgressPercent(word.experience)}%; background-color: {getProgressColor(word.experience)};"
-                        ></div>
-                    </div>
-                    <span class="xp-label">{word.experience} / {MAX_XP}</span>
-                </div>
-            </article>
+        {#if isLoadingExperience}
+            <div class="empty-state">
+                <p>Loading vocabulary...</p>
+            </div>
+        {:else if filteredWords.length === 0}
+            <div class="empty-state">
+                <p>No words found</p>
+                <span>Try a different search or filter</span>
+            </div>
         {:else}
-            <p class="no-results">No words match your filters.</p>
-        {/each}
+            {#each filteredWords as word (word.korean + word.english)}
+                <article class="word-card" class:mastered={word.experience >= MAX_XP}>
+                    <div class="word-main">
+                        <p class="word-korean">{word.korean}</p>
+                        <p class="word-english">{word.english}</p>
+                    </div>
+                    <div class="word-progress">
+                        <div
+                            class="progress-bar"
+                            role="progressbar"
+                            aria-label={`Experience for ${word.korean}`}
+                            aria-valuemin="0"
+                            aria-valuemax={MAX_XP}
+                            aria-valuenow={word.experience}
+                        >
+                            <span
+                                class={`progress-fill ${progressTone(word.experience)}`}
+                                style={`width: ${progressPercent(word.experience)}%`}
+                            ></span>
+                        </div>
+                        <span class="xp-label">{word.experience}/{MAX_XP}</span>
+                    </div>
+                </article>
+            {/each}
+        {/if}
     </section>
+
+    <p class="results-count">{filteredWords.length} words</p>
 </main>
 
 <style>
-    .vocabulary-page {
-        padding-block: var(--space-m);
+    .vocabulary-view {
+        padding-block: var(--space-m) var(--space-l);
+        gap: var(--space-m);
     }
 
+    /* Header */
     .page-header {
         display: flex;
-        align-items: center;
-        gap: var(--space-s);
-        margin-bottom: var(--space-m);
+        gap: var(--space-xs);
+        align-items: flex-start;
     }
 
-    .page-header h1 {
-        font-size: var(--text-size-3xl);
-        font-weight: var(--font-weight-semi-bold);
-        margin: 0;
-    }
-
-    /* Stats */
-    .stats-summary {
+    .page-heading {
         display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: var(--space-s);
-        margin-bottom: var(--space-m);
-    }
-
-    .stat-card {
-        background: var(--color-neutral-800);
-        border-radius: var(--border-radius-m);
-        padding: var(--space-s);
-        text-align: center;
-        display: flex;
-        flex-direction: column;
         gap: var(--space-2xs);
     }
 
-    .stat-value {
+    .page-heading h1 {
+        margin: 0;
         font-size: var(--text-size-2xl);
+        font-weight: var(--font-weight-bold);
+    }
+
+    .lede {
+        color: var(--color-neutral-400);
+        margin: 0;
+        font-size: var(--font-size-small);
+    }
+
+    /* Stats Strip */
+    .stats-strip {
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
+        background: var(--color-neutral-800);
+        border: 1px solid var(--color-neutral-700);
+        border-radius: var(--border-radius-m);
+        padding: var(--space-s) var(--space-m);
+    }
+
+    .stat {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 2px;
+    }
+
+    .stat-value {
+        font-size: var(--text-size-xl);
         font-weight: var(--font-weight-bold);
         color: var(--color-accent-500);
     }
@@ -201,117 +243,248 @@
         color: var(--color-neutral-400);
     }
 
-    /* Filters */
-    .filters {
-        display: flex;
-        flex-direction: column;
-        gap: var(--space-s);
-        margin-bottom: var(--space-s);
+    .stat-divider {
+        width: 1px;
+        height: 2rem;
+        background: var(--color-neutral-700);
     }
 
-    .search-input {
+    /* Controls */
+    .controls {
+        display: grid;
+        gap: var(--space-s);
+    }
+
+    .search input {
         width: 100%;
-        padding: var(--space-s);
-        border: 1px solid var(--color-neutral-700);
+        padding: var(--space-xs) var(--space-s);
         border-radius: var(--border-radius-m);
+        border: 1px solid var(--color-neutral-700);
         background: var(--color-neutral-800);
         color: var(--color-neutral-100);
-        font-size: var(--font-size-base);
+        font-size: 1rem;
+        transition: border-color var(--transition-normal);
     }
 
-    .search-input::placeholder {
+    .search input:focus {
+        outline: none;
+        border-color: var(--color-accent-600);
+    }
+
+    .search input::placeholder {
         color: var(--color-neutral-500);
     }
 
-    .filter-row {
+    .filter-sort-row {
         display: flex;
-        gap: var(--space-xs);
+        justify-content: space-between;
+        align-items: center;
+        gap: var(--space-s);
         flex-wrap: wrap;
     }
 
-    .filter-select {
-        flex: 1;
-        min-width: 100px;
-        padding: var(--space-xs) var(--space-s);
+    .pill-group {
+        display: flex;
+        background: var(--color-neutral-800);
+        border-radius: var(--border-radius-m);
+        padding: 3px;
+        gap: 2px;
+    }
+
+    .pill-group button {
+        border: none;
+        background: transparent;
+        color: var(--color-neutral-400);
+        border-radius: calc(var(--border-radius-m) - 2px);
+        padding: var(--space-2xs) var(--space-s);
+        cursor: pointer;
+        font-size: var(--font-size-small);
+        font-weight: var(--font-weight-semi-bold);
+        transition: all var(--transition-normal);
+    }
+
+    .pill-group button:hover {
+        color: var(--color-neutral-100);
+    }
+
+    .pill-group button.active {
+        background: var(--color-accent-700);
+        color: var(--color-neutral-100);
+    }
+
+    select {
+        background: var(--color-neutral-800);
+        color: var(--color-neutral-300);
         border: 1px solid var(--color-neutral-700);
         border-radius: var(--border-radius-s);
-        background: var(--color-neutral-800);
-        color: var(--color-neutral-100);
+        padding: var(--space-2xs) var(--space-s);
         font-size: var(--font-size-small);
+        cursor: pointer;
     }
 
-    .word-count {
-        font-size: var(--font-size-small);
-        color: var(--color-neutral-400);
-        margin-bottom: var(--space-s);
+    select:focus {
+        outline: none;
+        border-color: var(--color-accent-600);
     }
 
-    /* Word list */
+    /* Word List */
     .word-list {
-        display: flex;
-        flex-direction: column;
+        display: grid;
         gap: var(--space-xs);
     }
 
     .word-card {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--space-m);
         background: var(--color-neutral-800);
+        border: 1px solid var(--color-neutral-700);
         border-radius: var(--border-radius-m);
         padding: var(--space-s) var(--space-m);
-        display: flex;
-        flex-direction: column;
-        gap: var(--space-xs);
+        transition: border-color var(--transition-normal);
     }
 
-    .word-info {
-        display: flex;
-        justify-content: space-between;
-        align-items: baseline;
-        gap: var(--space-s);
+    .word-card:hover {
+        border-color: var(--color-neutral-600);
+    }
+
+    .word-card.mastered {
+        border-color: var(--color-accent-800);
+        background: linear-gradient(135deg, var(--color-neutral-800) 0%, rgba(127, 180, 218, 0.05) 100%);
+    }
+
+    .word-main {
+        flex-shrink: 0;
+        min-width: 0;
     }
 
     .word-korean {
+        margin: 0;
         font-size: var(--text-size-xl);
         font-weight: var(--font-weight-semi-bold);
-        color: var(--color-neutral-100);
+        line-height: 1.2;
     }
 
     .word-english {
-        font-size: var(--font-size-base);
+        margin: 0;
         color: var(--color-neutral-400);
-        text-align: right;
-        flex-shrink: 1;
+        font-size: var(--font-size-small);
     }
 
     .word-progress {
         display: flex;
         align-items: center;
         gap: var(--space-s);
+        flex: 1;
+        max-width: 200px;
     }
 
-    .progress-bar-track {
+    .progress-bar {
+        position: relative;
         flex: 1;
         height: 6px;
+        border-radius: 999px;
         background: var(--color-neutral-700);
-        border-radius: 3px;
         overflow: hidden;
     }
 
-    .progress-bar-fill {
-        height: 100%;
-        border-radius: 3px;
-        transition: width var(--transition-normal), background-color var(--transition-normal);
+    .progress-fill {
+        position: absolute;
+        inset: 0;
+        width: 0%;
+        border-radius: 999px;
+        transition: width 0.3s ease;
+    }
+
+    .progress-fill.xp-low {
+        background: var(--color-accent-800);
+    }
+
+    .progress-fill.xp-mid {
+        background: var(--color-accent-700);
+    }
+
+    .progress-fill.xp-strong {
+        background: var(--color-accent-600);
+    }
+
+    .progress-fill.xp-max {
+        background: var(--color-accent-500);
     }
 
     .xp-label {
         font-size: var(--font-size-small);
         color: var(--color-neutral-500);
-        min-width: 50px;
+        font-variant-numeric: tabular-nums;
+        min-width: 45px;
         text-align: right;
     }
 
-    .no-results {
+    /* Empty State */
+    .empty-state {
         text-align: center;
+        padding: var(--space-xl) var(--space-m);
+        color: var(--color-neutral-400);
+    }
+
+    .empty-state p {
+        margin: 0;
+        font-weight: var(--font-weight-semi-bold);
+    }
+
+    .empty-state span {
+        font-size: var(--font-size-small);
         color: var(--color-neutral-500);
-        padding: var(--space-l);
+    }
+
+    /* Results Count */
+    .results-count {
+        text-align: center;
+        font-size: var(--font-size-small);
+        color: var(--color-neutral-500);
+        margin: 0;
+    }
+
+    /* Mobile adjustments */
+    @media (max-width: 30rem) {
+        .page-header {
+            flex-direction: column;
+        }
+
+        .stats-strip {
+            padding: var(--space-xs) var(--space-s);
+        }
+
+        .stat-value {
+            font-size: var(--font-size-large);
+        }
+
+        .stat-divider {
+            height: 1.5rem;
+        }
+
+        .word-card {
+            flex-direction: column;
+            align-items: stretch;
+            gap: var(--space-s);
+        }
+
+        .word-progress {
+            max-width: none;
+        }
+
+        .filter-sort-row {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .pill-group {
+            justify-content: center;
+        }
+
+        select {
+            width: 100%;
+        }
     }
 </style>
