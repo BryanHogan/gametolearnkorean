@@ -36,14 +36,14 @@
         display: flex;
         justify-content: space-between;
         padding-block: var(--space-m);
-        max-width: 400px;
-        width: 100%;
+        min-width: 400px;
         gap: var(--space-xl);
     }
     .card-grid {
         display: grid;
         grid-template-columns: 1fr;
-        grid-auto-rows: 1fr;
+        grid-auto-rows: auto;
+        width: fit-content;
         row-gap: var(--space-m);
         grid-auto-flow: row;
         flex: 1;
