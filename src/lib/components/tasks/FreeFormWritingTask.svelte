@@ -13,14 +13,13 @@
 
 <div class="freeform-container margin-inline-auto">
     <h2 class="text-align-center">{game.freeFormTask.englishWord}</h2>
-    <p class="instruction text-align-center">Type the Korean translation</p>
     
     {#if game.freeFormTask.inputHint}
-        <p class="hint text-align-center">{game.freeFormTask.inputHint}</p>
+        <p class="text-align-center">{game.freeFormTask.inputHint}</p>
     {/if}
     
     {#if game.freeFormTask.showSuccess}
-        <p class="success text-align-center">Correct! ✓</p>
+        <p class="text-align-center">Correct! ✓</p>
     {/if}
     
     <input
@@ -38,13 +37,13 @@
     
     <div class="button-row">
         <Button 
-            type="grow accent-low" 
+            type="neutral grow" 
             onclick={() => game.freeFormTask.showHint()}
         >
             Hint
         </Button>
         <Button 
-            type="grow accent-low" 
+            type="accent-low grow" 
             onclick={() => game.freeFormTask.handleInput()}
         >
             Submit
@@ -65,39 +64,25 @@
         padding-block: var(--space-m);
     }
     
-    .instruction {
-        color: var(--color-text-muted);
-        font-size: var(--font-size-s);
-    }
-    
-    .hint {
-        color: var(--color-warning);
-        font-size: var(--font-size-s);
-    }
-    
-    .success {
-        color: var(--color-success);
-        font-weight: bold;
-    }
-    
     .korean-input {
         width: 100%;
         padding: var(--space-m);
-        font-size: var(--font-size-l);
+        margin-bottom: var(--space-s);
+        font-size: var(--font-size-large);
         text-align: center;
         border: 2px solid var(--color-border);
-        border-radius: var(--radius-m);
-        background-color: var(--color-surface);
-        color: var(--color-text);
+        border-radius: var(--border-radius-m);
+        background-color: var(--color-neutral-900);
+        color: var(--text-primary);
     }
     
     .korean-input:focus {
         outline: none;
-        border-color: var(--color-primary);
+        border-color: var(--color-accent-700);
     }
     
     .korean-input::placeholder {
-        color: var(--color-text-muted);
+        color: var(--text-muted);
         opacity: 0.6;
     }
     
@@ -108,7 +93,7 @@
     }
     
     .tries {
-        color: var(--color-text-muted);
-        font-size: var(--font-size-s);
+        color: var(--text-muted);
+        font-size: var(--font-size-small);
     }
 </style>

@@ -25,6 +25,7 @@
     /* Semantic Color Tokens */ 
     --color-border: var(--color-neutral-700);
     --color-border-active: var(--color-accent-700);
+
     --text-primary: var(--color-neutral-100);
     --text-secondary: var(--color-neutral-300);
     --text-muted: var(--color-neutral-500);
