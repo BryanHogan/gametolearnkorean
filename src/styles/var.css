@@ -22,6 +22,14 @@
     --color-accent-red-500: #B13C3B;
     --color-accent-red-100: #DBABAC;
 
+    /* Semantic Color Tokens */ 
+    --color-border: var(--color-neutral-700);
+    --color-border-active: var(--color-accent-700);
+    --text-primary: var(--color-neutral-100);
+    --text-secondary: var(--color-neutral-300);
+    --text-muted: var(--color-neutral-500);
+    --link-color: var(--color-accent-500);
+
     /* Typography */
     --font-family: "Source Sans 3", "Helvetica", "Arial", sans-serif; /* Need to add font */
     --font-mono: ui-monospace, Menlo, monospace;
