@@ -68,6 +68,7 @@
         width: 100%;
         padding: var(--space-m);
         margin-bottom: var(--space-s);
+        margin-top: var(--space-s);
         font-size: var(--font-size-large);
         text-align: center;
         border: 2px solid var(--color-border);
