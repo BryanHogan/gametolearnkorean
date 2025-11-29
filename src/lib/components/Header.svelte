@@ -10,6 +10,9 @@
     let isSettingsOpen = $state(false);
     let isBookOpen = $state(false);
     let isStreakOpen = $state(false);
+    
+    // Progress tooltip state
+    let showProgressTooltip = $state(false);
     // Book modal filter state
     let showOnlyFailed = $state(true);
 
@@ -88,14 +91,32 @@
             <!-- Left side: Progress bar (only during active game) -->
             <div class="header-left">
                 {#if isGameActive}
-                    <div class="progress-container">
-                        <div class="progress-bar-track">
+                    <button 
+                        type="button"
+                        class="progress-container"
+                        onmouseenter={() => showProgressTooltip = true}
+                        onmouseleave={() => showProgressTooltip = false}
+                        onclick={() => showProgressTooltip = !showProgressTooltip}
+                        aria-label="Session progress: {Math.round(progressPercent)}%"
+                    >
+                        <div 
+                            class="progress-bar-track"
+                            role="progressbar"
+                            aria-valuenow={Math.round(progressPercent)}
+                            aria-valuemin={0}
+                            aria-valuemax={100}
+                        >
                             <div 
                                 class="progress-bar-fill" 
                                 style="width: {progressPercent}%"
                             ></div>
                         </div>
-                    </div>
+                        {#if showProgressTooltip}
+                            <span class="progress-tooltip" role="tooltip">
+                                {Math.round(progressPercent)}%
+                            </span>
+                        {/if}
+                    </button>
                 {:else}
                     <p class="brand">GTLK</p>
                 {/if}
@@ -258,9 +279,31 @@
     
     /* Progress bar styles */
     .progress-container {
+        position: relative;
         display: flex;
         align-items: center;
         width: clamp(80px, 30vw, 200px);
+        cursor: pointer;
+        background: transparent;
+        border: none;
+        padding: 0;
+    }
+    
+    .progress-tooltip {
+        position: absolute;
+        top: calc(100% + var(--space-xs));
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: var(--color-neutral-800);
+        color: var(--color-neutral-100);
+        padding: var(--space-2xs) var(--space-xs);
+        border-radius: var(--border-radius-s);
+        font-size: var(--font-size-small);
+        font-weight: var(--font-weight-semi-bold);
+        box-shadow: var(--box-shadow-s);
+        white-space: nowrap;
+        z-index: 20;
+        pointer-events: none;
     }
     
     .progress-bar-track {
