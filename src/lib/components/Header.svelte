@@ -230,14 +230,6 @@
         background-color: color-mix(in srgb, var(--color-neutral-900) 95%, transparent);
     }
 
-    .header-container::before {
-        content: "";
-        position: absolute;
-        inset: 0;
-        backdrop-filter: blur(5px);
-        z-index: -1;
-    }
-
     header {
         display: flex;
         justify-content: space-between;
