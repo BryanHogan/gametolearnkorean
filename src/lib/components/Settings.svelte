@@ -4,6 +4,10 @@
     function handleTtsToggle(event) {
         updateSetting('ttsEnabled', event.target.checked);
     }
+    
+    function handleStreakIconToggle(event) {
+        updateSetting('streakIconEnabled', event.target.checked);
+    }
 </script>
 
 <div class="settings-list">
@@ -17,6 +21,21 @@
                 type="checkbox" 
                 checked={settings.ttsEnabled}
                 onchange={handleTtsToggle}
+            />
+            <span class="toggle-slider"></span>
+        </label>
+    </div>
+    
+    <div class="setting-item">
+        <div class="setting-info">
+            <span class="setting-label">Show Streak Icon</span>
+            <span class="setting-description">Display streak flame in the header bar</span>
+        </div>
+        <label class="toggle-switch">
+            <input 
+                type="checkbox" 
+                checked={settings.streakIconEnabled}
+                onchange={handleStreakIconToggle}
             />
             <span class="toggle-slider"></span>
         </label>

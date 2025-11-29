@@ -2,6 +2,7 @@
     import Icons from "$lib/components/icons/index.js";
     import Modal from "$lib/components/Modal.svelte";
     import Settings from "$lib/components/Settings.svelte";
+    import { settings } from "$lib/util/settings.svelte.js";
     
     let { game = null } = $props();
     
@@ -154,15 +155,17 @@
             <!-- Right side: Icon buttons -->
             <div class="icon-group">
                 <!-- Streak flame -->
-                <button 
-                    type="button" 
-                    class="icon-button"
-                    onclick={openStreak}
-                    aria-label="View streak"
-                    title="View streak"
-                >
-                    <Icons.flame class="icon" />
-                </button>
+                {#if settings.streakIconEnabled}
+                    <button 
+                        type="button" 
+                        class="icon-button"
+                        onclick={openStreak}
+                        aria-label="View streak"
+                        title="View streak"
+                    >
+                        <Icons.flame class="icon" />
+                    </button>
+                {/if}
                 
                 <!-- Book -->
                 <button 

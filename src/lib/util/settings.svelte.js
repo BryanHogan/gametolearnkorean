@@ -3,7 +3,8 @@ const canUseLocalStorage = typeof window !== 'undefined';
 
 const defaultSettings = {
     ttsEnabled: true,
-    experienceBias: true
+    experienceBias: true,
+    streakIconEnabled: true
 };
 
 export const settings = $state({ ...defaultSettings });
