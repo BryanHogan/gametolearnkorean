@@ -4,7 +4,6 @@ export class ManyVsOneTask {
     // State
     target = $state(null);
     options = $state([]);
-    promptDirection = $state("english-to-korean");
 
     constructor(game) {
         this.game = game;
@@ -16,9 +15,6 @@ export class ManyVsOneTask {
         // Combine target with distractors and shuffle
         const allOptions = [this.target, ...distractors];
         this.options = this.game.shuffledWords(allOptions);
-        
-        // Randomize prompt direction
-        this.promptDirection = Math.random() > 0.5 ? "english-to-korean" : "korean-to-english";
     }
 
     handleInput(option) {
