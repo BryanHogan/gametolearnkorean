@@ -12,6 +12,13 @@ export class PairsTask {
         this.game = game;
     }
 
+    // Generate pair count: pick lower of two random numbers between 4-8
+    getPairAmount() {
+        const roll1 = Math.floor(Math.random() * 5) + 4; // 4 to 8
+        const roll2 = Math.floor(Math.random() * 5) + 4; // 4 to 8
+        return Math.min(roll1, roll2);
+    }
+
     setup(words) {
         this.chosenPairs = words;
         this.selectedCards = [];

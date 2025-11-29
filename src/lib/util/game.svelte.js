@@ -94,10 +94,6 @@ export class Game {
         return filtered.length > 0 ? filtered : words;
     }
 
-    get pairAmount() {
-        return Math.min(this.level / 5 + 5, 10);
-    }
-
     async startGame() {
         // Wait for IndexedDB experience data to be loaded before building pool
         await wordDataReady;
@@ -371,12 +367,14 @@ export class Game {
         targetWords = this.excludeRecentlyAdvanced(targetWords);
         otherWords = this.excludeRecentlyAdvanced(otherWords);
         
+        const pairAmount = this.pairsTask.getPairAmount();
+        
         // If not enough target words, use incomplete words from any level
-        if (targetWords.length < this.pairAmount) {
+        if (targetWords.length < pairAmount) {
             targetWords = [...targetWords, ...this.shuffledWords(otherWords)];
         }
         
-        const selectedWords = this.shuffledWords(targetWords).slice(0, this.pairAmount);
+        const selectedWords = this.shuffledWords(targetWords).slice(0, pairAmount);
         
         // Setup the pairs task with selected words
         this.pairsTask.setup(selectedWords);
