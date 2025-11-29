@@ -1,8 +1,6 @@
 import { speakKorean } from "$lib/util/audio.svelte.js";
 
 export class FreeFormTask {
-    game = null;
-    
     englishWord = $state("");
     koreanWord = $state("");
     userInput = $state("");
@@ -10,7 +8,6 @@ export class FreeFormTask {
     failedTries = $state(0);
     showSuccess = $state(false);
     hintUsed = $state(false);
-    currentWord = null;
 
     constructor(game) {
         this.game = game;

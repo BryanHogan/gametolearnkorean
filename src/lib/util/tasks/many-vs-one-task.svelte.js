@@ -1,8 +1,6 @@
 import { speakKorean } from "$lib/util/audio.svelte.js";
 
 export class ManyVsOneTask {
-    game = null;
-
     // State
     target = $state(null);
     options = $state([]);

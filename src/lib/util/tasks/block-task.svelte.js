@@ -2,8 +2,6 @@ import { getSimilarBlock, getRandomKoreanBlock } from "$lib/util/korean.svelte";
 import { speakKorean } from "$lib/util/audio.svelte.js";
 
 export class BlockTask {
-    game = null;
-    
     englishBlockWord = $state("");
     koreanBlockWord = $state("");
     koreanBlocks = $state([""]);
@@ -11,7 +9,6 @@ export class BlockTask {
     blockInput = $state("");
     inputHint = $state("");
     failedTriesCurrentRound = $state(0);
-    currentWord = null;
 
     constructor(game) {
         this.game = game;

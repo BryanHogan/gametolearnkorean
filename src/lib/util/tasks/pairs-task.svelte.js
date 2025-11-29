@@ -1,8 +1,6 @@
 import { speakKorean } from "$lib/util/audio.svelte.js";
 
 export class PairsTask {
-    game = null;
-
     // State
     chosenPairs = $state([]);
     englishCards = $state([]);
