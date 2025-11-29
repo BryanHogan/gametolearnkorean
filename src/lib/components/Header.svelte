@@ -13,8 +13,37 @@
     
     // Progress tooltip state
     let showProgressTooltip = $state(false);
+    let tooltipTapped = $state(false); // Track if tooltip was shown via tap
     // Book modal filter state
     let showOnlyFailed = $state(true);
+    
+    // Handle progress bar tap (for mobile)
+    const handleProgressTap = () => {
+        tooltipTapped = !tooltipTapped;
+        showProgressTooltip = tooltipTapped;
+    };
+    
+    // Handle mouse enter (desktop hover)
+    const handleProgressMouseEnter = () => {
+        if (!tooltipTapped) {
+            showProgressTooltip = true;
+        }
+    };
+    
+    // Handle mouse leave (desktop hover)
+    const handleProgressMouseLeave = () => {
+        if (!tooltipTapped) {
+            showProgressTooltip = false;
+        }
+    };
+    
+    // Close tooltip when tapping elsewhere
+    const handleDocumentClick = (event) => {
+        if (tooltipTapped && !event.target.closest('.progress-container')) {
+            tooltipTapped = false;
+            showProgressTooltip = false;
+        }
+    };
 
     const openStreak = () => {
         isStreakOpen = true;
@@ -83,7 +112,7 @@
     });
 </script>
 
-<svelte:window onkeydown={handleEscape} />
+<svelte:window onkeydown={handleEscape} onclick={handleDocumentClick} />
 
 <div class="backdrop-area">
     <div class="header-container">
@@ -94,9 +123,9 @@
                     <button 
                         type="button"
                         class="progress-container"
-                        onmouseenter={() => showProgressTooltip = true}
-                        onmouseleave={() => showProgressTooltip = false}
-                        onclick={() => showProgressTooltip = !showProgressTooltip}
+                        onmouseenter={handleProgressMouseEnter}
+                        onmouseleave={handleProgressMouseLeave}
+                        onclick={handleProgressTap}
                         aria-label="Session progress: {Math.round(progressPercent)}%"
                     >
                         <div 
