@@ -1,11 +1,9 @@
 I want to achieve this experience for this Korean learning and practice app:
 
-1. The user selects how many words they want to learn. E.g. 50 words.
-    *   *Selection Logic:* Currently, these 50 words are chosen randomly. Future goal: prioritize words not yet learned.
+1. The user selects which mode they want to play, e.g. standard.
 2. At the beginning the user receives a list of which words were selected.
 3. In this list they see the English and Korean sides of the word, and an optional explanation of the word.
     *   *Future Feature:* A field to add a note on how they remember this word (mnemonic) will be added later. These notes will be saved permanently and tied to the word.
-    *   M*Future View:* A "Dictionary" view will allow users to see all learned words and their notes.
 4. Then the gamified Anki / Duolingo style learning / practice part starts.
     *   *Progression:* For each word, the user aims to "master" it by passing all task types.
     *   *Flow:* The task type changes frequently to keep things interesting.
@@ -20,15 +18,13 @@ I want to achieve this experience for this Korean learning and practice app:
     *   *Failure:*
         *   If a user gets a word wrong (mismatch or typo), they must retry immediately until correct.
         *   **Penalty:** The word does *not* advance a stage if failed first. Crucially, **the word moves down a stage** (current progression score - 1) upon failure.
-    *   *Goal:* The session ends when all selected words have passed the final task type (Task Type D), so when all words have a progress score of 4.
+    *   *Goal:* The session ends when in standard mode when all selected words have passed the final task type (Task Type D), so when all words have a progress score of 4.
 
 The different task types are:
 	A) **Matching pairs: Many vs many.** Multiple cards are presented on both sides (English left, Korean right). The user matches correct pairs. Matched pairs are removed. Stage clears when all are matched. Scoring is per-word (individual success/fail).
-	B) **Matching pairs: Many vs one (Multiple Choice).**
-        *   Scenario 1: Show 1 English word, user picks from 4 Korean options.
-        *   Scenario 2: Show 1 Korean word, user picks from 4 English options.
+	B) **Matching pairs: Many vs one (Multiple Choice).** Show 1 Korean word, user picks from 4 English options.
         *   **Distractors:** Wrong options should mainly come from the current session. There should be a bias towards using words of the same type (e.g. verbs with verbs) to prevent easy guessing based on endings.
         *   User moves to next stage upon correct selection.
 	C) **Block writing.** The user is presented with the English side and must assemble the Korean translation using pre-existing Hangul block buttons.
-	D) **Free-form writing.** The user is presented with the English side (or Korean audio/prompt) and must type the Korean translation using their **device's system keyboard**. We assume the user has a Korean keyboard installed.
+	D) **Free-form writing.** The user is presented with the English side and must type the Korean translation using their **device's system keyboard**. We assume the user has a Korean keyboard installed.
 

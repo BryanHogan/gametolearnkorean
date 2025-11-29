@@ -28,7 +28,6 @@ Each word has **session progress** (0–4). Tasks match progress levels:
 
 - **Correct first try**: Word advances +1 progress
 - **Failure**: Word regresses -1 progress (first failure only)
-- **Session complete**: All words reach 4 → +5 XP each
 
 ### Experience
 - `updateExperience(korean, english, amount)` persists to IndexedDB

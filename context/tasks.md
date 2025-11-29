@@ -5,25 +5,31 @@
 ### Core Features
 - [ ] After wrong answer: button to explain both words -> within book on Header bar
 - [ ] Word explanations: background, tips, example sentences
-- [ ] Add words from Naver Dictionary groups -> Test with another group of difficulty (use 2nd deck)
+  - [ ] Show these after word as used in OneVsMany. Provide option to "Don't show again", "Show again next game". Within /vocabulary view include icon/something that shows this status of whether explanation will be shown again or not. Give option to enable/disable this again.
+  - [ ] Also show these in the book view from Header
+- [ ] Replace "Word Pool Size" selection with different modes (standard, fast, survival (?))
 
 ### Settings
 - [ ] Reset progress
-- [ ] Make Streak icon toggle-able
+- [x] Make Streak icon toggle-able
 - [ ] On StartScreen make "Further settings" fold-able
 
 ### Technical
 - [ ] Publish to Play Store
 - [ ] Fix book icon Header wrong words but not correctly implemented
+- [ ] Save current game state to localStorage so that it persists on page reload (use modal that asks if previous session should be loaded?)
 
 ### Content
-- [ ] Expand vocabulary in `words.json`
+- [ ] Expand vocabulary in `words.json` - Add words from Naver Dictionary groups -> Test with another group of difficulty (use 2nd TTMIK deck as base)
 
 ### Other
 - [ ] User accounts
 - [ ] Analytics - Information on how much people use the app actually
 - [ ] Monetization - Premium features behind a subscription: Synchronization, audio only. Possibly: Sentence mode, - Consider also enabling one-time purchase option.
-- [ ] Export data
+- [ ] Export data + import data
+- [ ] When more game modes added -> add i-icon which shows modal with explanation of mode
+- [ ] PWA stuff
+- [ ] Basic stuff for website (favicon, description, etc.)
 
 ---
 
@@ -31,15 +37,17 @@
 
 ### Progress & Streaks
 - [ ] Animated progress bar: show "+" on correct, "-" on mistake
-- [ ] Daily streak tracking 
-- [ ] GitHub-style daily usage overview
 
 ### Feedback & Polish
 - [ ] Shake animation for wrong answers
-- [ ] Confetti/particle effect on level complete
+- [ ] Confetti/particle effect on round complete
 
 ### Word Learning
+- [ ] Allow user to add custom words
+- [ ] Allow user to import custom built word decks
+- [ ] Allow user to import Anki deck (include logic to trim words and check for duplication). In /vocabulary view provide option to adjust cards and show where they are from (custom or base).
 - [ ] Option to select specific words / low-confidence words
+- [ ] Allow option to add note / mnemonic to card. Allow this especially in the beginning of a card and in /vocabulary.
 
 ### Settings
 - [ ] Toggle task types (pairs, many-vs-one, block writing, etc.)
